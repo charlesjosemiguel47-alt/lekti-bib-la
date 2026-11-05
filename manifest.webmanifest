@@ -2,10 +2,24 @@
   "name": "Gid Lekti Bib la",
   "short_name": "Gid Lekti",
   "lang": "ht",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f7f8fa",
   "theme_color": "#142d4e",
-  "description": "Gid lekti Biblik chak jou avèk lyen chapit YouVersion."
+  "description": "Gid lekti Biblik chak jou avèk lyen chapit YouVersion.",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }

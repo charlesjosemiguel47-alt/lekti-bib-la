@@ -5,7 +5,7 @@ Aplikasyon sa a konsève pwogram lekti 365 jou a, lyen YouVersion BSA (Bib ID 38
 NAVIGASYON ANBA
 - Gid Lekti: chwazi mwa ak jou, li referans yo, ouvri chapit yo nan YouVersion epi make pwogrè.
 - 📖 Konnen liv bib la: lis 66 liv Bib la, separe an Ansyen Testaman (39) ak Nouvo Testaman (27). Peze sou tit chak gwoup pou montre oswa kache liv yo.
-- 📽️ Sèvis Pwojektè: lis 66 liv Bib la ak abrevyasyon yo, separe an Ansyen Testaman (39 liv) ak Nouvo Testaman (27 liv), ansanm ak orè sèvis pwojektè Novanm 2026. Peze sou chak gwoup pou montre/kache liv yo; sèvi ak rechèch la pou jwenn sèvis.
+- 📽️ Sèvis Pwojektè: lis 66 liv Bib la ak abrevyasyon yo, ansanm ak orè sèvis pwojektè Novanm 2026. Peze sou lis liv la pou montre/kache li; sèvi ak rechèch la pou jwenn sèvis.
 - 🤝 Akèy: orè Akèy Novanm 2026, ak rechèch sou non, dat, jou ak responsablite.
 - 🧹 Netwayaj: orè Netwayaj Novanm 2026, ak rechèch sou non, dat ak jou.
 
