@@ -1,0 +1,11 @@
+{
+  "name": "Gid Lekti Bib la",
+  "short_name": "Gid Lekti",
+  "lang": "ht",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#142d4e",
+  "description": "Gid lekti Biblik chak jou avèk lyen chapit YouVersion."
+}
