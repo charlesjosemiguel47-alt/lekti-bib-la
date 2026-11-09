@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="ht"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#142d4e"><meta name="application-name" content="Gid Lekti Bib la"><meta name="mobile-web-app-capable" content="yes"><meta name="description" content="Gid lekti Bib la chak jou, ak twa lekti pou chak jou.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png"><title>Gid Lekti Bib la</title>
+<style>
+:root{--navy:#142d4e;--gold:#c59a43;--ink:#192536;--muted:#64748b;--green:#18794e}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#eaf0f6,#f7f8fa 250px);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink)}
+header{position:relative;background:var(--navy);color:#fff;padding:16px 18px 25px;border-radius:0 0 24px 24px;box-shadow:0 5px 18px #12243c30}
+.eyebrow{font-size:11px;letter-spacing:2px;color:#e9c978;font-weight:800}h1{font-size:25px;margin:6px 0 4px}header p{margin:0;color:#dbe5f1;font-size:13px}
+.wrap{max-width:720px;margin:auto;padding:16px}.panel{background:white;border:1px solid #e3e8ef;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 5px 16px #1c35500b}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:12px;font-weight:800;color:#516174;display:block;margin-bottom:6px}
+select,button{font:inherit}select{width:100%;padding:12px;border:1px solid #d6dee8;border-radius:12px;background:#fff;color:#15263c;font-weight:700;font-size:15px}
+.daytitle{display:flex;justify-content:space-between;align-items:center;gap:12px}.daytitle h2{font-size:19px;margin:0}.tag{background:#f6edda;color:#805d18;padding:6px 10px;border-radius:30px;font-size:11px;font-weight:800}
+.readings{display:grid;gap:10px;margin-top:15px}.reading{border:1px solid #e1e7ee;border-radius:14px;padding:13px;background:#fbfcfe;display:flex;align-items:center;gap:12px}
+.num{flex:0 0 48px;height:44px;border-radius:12px;background:#edf2f8;color:var(--navy);font-weight:900;display:grid;place-items:center;font-size:12px}
+.reading small{display:block;font-size:10px;letter-spacing:1px;color:#738195;font-weight:900;margin-bottom:3px}.reading strong{font-size:17px;line-height:1.3;overflow-wrap:anywhere}.chapterLinks{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.chapterLink{display:inline-flex;align-items:center;gap:5px;padding:8px 11px;border-radius:10px;background:#eaf2fb;color:#174b7c;text-decoration:none;font-size:12px;font-weight:800;border:1px solid #d3e2f2}.chapterLink:active{background:#d7e8f8}.readingBody{min-width:0;flex:1}
+.empty{color:#80612c;background:#fff9e9;border:1px dashed #e4c77e;padding:12px;border-radius:12px;font-size:13px}
+.mark{width:100%;border:0;border-radius:13px;padding:14px;background:var(--green);color:#fff;font-weight:800;font-size:15px;margin-top:14px}.mark.done{background:#e6f4ec;color:#176442;border:1px solid #b9dfc9}
+.progressrow{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#536274;margin-bottom:8px}.bar{height:10px;background:#e8edf2;border-radius:99px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#c59a43,#1d8658);border-radius:99px;transition:width .2s}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.stat{background:#f5f7fa;border-radius:12px;padding:11px 8px;text-align:center}.stat b{display:block;font-size:21px;color:var(--navy)}.stat span{font-size:10px;color:#66758a;font-weight:700}
+.foot{text-align:center;color:#738195;font-size:11px;padding:4px 12px 24px}.reset{border:0;background:transparent;color:#8b4d39;text-decoration:underline;font-size:12px;padding:10px}
+.install{display:none;background:#fff7e6;border:1px solid #ecd8a8;border-radius:14px;padding:12px;margin-bottom:14px;font-size:12px;color:#684d16}.install button{float:right;background:var(--navy);color:white;border:0;border-radius:9px;padding:7px 10px;font-weight:700}
+
+.bottomNav{overflow-x:auto;grid-template-columns:repeat(6,minmax(76px,1fr));position:fixed;z-index:1000;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #dce4ee;box-shadow:0 -5px 20px #142d4e14}
+.navItem{border:0;background:transparent;color:#65758a;padding:5px 1px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0}.navItem span{font-size:21px;line-height:24px}.navItem small{font-size:9px;font-weight:800;white-space:nowrap}.navItem.active{color:#123f70;background:#e8f0fa;border-radius:12px;box-shadow:inset 0 0 0 1px #cbdced}.navItem.active span{transform:translateY(-1px)}
+.hidden{display:none!important}
+body{padding-bottom:76px}.wrap{padding-bottom:18px}.bottomPage{max-width:720px;margin:auto;padding:16px}.bottomPage .panel{margin-bottom:12px}
+.sectionHead{display:flex;align-items:center;gap:12px;margin-bottom:15px}.sectionHead>span{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:#edf3fa;font-size:24px}.sectionHead h2{margin:0 0 3px;font-size:19px}.sectionHead p{margin:0;color:#64748b;font-size:12px;line-height:1.4}
+.bookGroup{border:1px solid #e1e7ee;border-radius:14px;overflow:hidden;margin-top:10px}.accordion{width:100%;border:0;background:#f4f7fb;color:#173b68;text-align:left;padding:14px;font-weight:800;display:flex;justify-content:space-between;align-items:center;font-size:14px}.accordion span{font-size:11px;color:#65758a}.bookList{padding:8px 12px}.bookRow{display:flex;justify-content:space-between;gap:12px;padding:9px 3px;border-bottom:1px solid #edf0f4;font-size:14px}.bookRow:last-child{border-bottom:0}.bookRow b{color:#173b68}.bookRow code{background:#edf3fa;color:#174b7c;border-radius:7px;padding:3px 8px;font:700 12px system-ui}
+.schedule-card{border:1px solid #e1e7ee;border-radius:13px;padding:12px;margin:9px 0;background:#fbfcfe}.schedule-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.schedule-chip{background:#edf3fa;color:#174b7c;border-radius:20px;padding:5px 8px;font-size:11px;font-weight:750}.schedule-role{padding:7px 0;border-top:1px solid #edf0f4;font-size:13px}.schedule-role b{color:#173b68}.note{margin-top:14px;padding:12px;background:#f4f7fb;border-left:3px solid #c59a43;border-radius:9px;color:#52647a;font-size:12px}
+@media(max-width:370px){.navItem small{font-size:8px}.bottomNav{padding-left:2px;padding-right:2px}.bottomNav .navItem span{font-size:19px}}
+.headerMenu{position:absolute;right:15px;top:13px;z-index:20}.menuButton{list-style:none;cursor:pointer;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#ffffff20;color:white;font-size:22px;font-weight:900}.menuButton::-webkit-details-marker{display:none}.menuPanel{position:absolute;right:0;top:44px;min-width:210px;background:#fff;color:#1d2b3c;border:1px solid #dce4ee;border-radius:13px;padding:8px;box-shadow:0 12px 30px #06172d40}.menuPanel button{width:100%;border:0;background:transparent;text-align:left;padding:11px;border-radius:9px;color:#8b4d39;font-weight:7500}.menuPanel button:active{background:#f6eee9}
+.moreSections{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.moreSectionBtn{border:1px solid #d8e1ec;background:#f7f9fc;color:#30445d;border-radius:14px;padding:14px 10px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:8px}.moreSectionBtn.active{background:#173e68;color:#fff;border-color:#173e68;box-shadow:0 4px 12px #173e6830}.moreSectionBtn span{font-size:20px}.moreSubPage.hidden{display:none!important}@media(max-width:370px){.moreSectionBtn{font-size:12px;padding:12px 6px}}
+.schoolLevels{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0}.levelBtn{border:1px solid #d8e1ec;background:#f7f9fc;color:#30445d;border-radius:12px;padding:12px 8px;font-weight:850}.levelBtn.active{background:#173e68;color:#fff;border-color:#173e68;box-shadow:0 4px 12px #173e6830}.schoolContent{border:1px solid #dce5ef;border-radius:16px;overflow:hidden;background:#fff}.schoolHero{background:linear-gradient(130deg,#142d4e,#245784);color:white;padding:18px}.schoolHero .eyebrow{color:#f0d18a}.schoolHero h2{margin:5px 0;font-size:21px}.schoolBody{padding:15px}.schoolGroup{border:1px solid #e0e7ef;border-radius:12px;padding:13px;margin:10px 0;background:#fbfcfe}.schoolGroup h3{font-size:14px;color:#173b68;margin:0 0 9px}.schoolLine{font-size:13px;line-height:1.55;padding:5px 0;border-bottom:1px solid #edf0f4}.schoolLine:last-child{border-bottom:0}.schoolLine b{color:#173b68}.schoolNote{font-size:12px;color:#5b6c80;background:#f4f7fb;padding:12px;border-radius:10px;margin-top:12px}
+
+
+.sectionPopup{position:fixed;z-index:1200;right:14px;bottom:calc(72px + env(safe-area-inset-bottom));width:min(290px,calc(100vw - 36px));background:#fff;border:1px solid #e1e6ee;border-radius:8px;padding:7px 0;box-shadow:0 8px 24px #152b4540;}
+.sectionPopup.hidden{display:none!important}.popupItem{width:100%;min-height:54px;border:0;background:#fff;color:#2872df;display:flex;align-items:center;gap:15px;text-align:left;padding:10px 17px;font:500 15px system-ui,-apple-system,sans-serif}.popupItem:active,.popupItem:focus-visible{background:#edf4ff;outline:none}.popupItem span{width:28px;flex:0 0 28px;text-align:center;font-size:22px}.popupItem b{font-weight:500}.moreNav span{font-size:22px!important;letter-spacing:1px}
+
+
+.menuAction{display:flex;align-items:center;gap:10px;color:#173e68!important;font-size:14px;font-weight:800!important}.menuDivider{height:1px;background:#e9edf2;margin:4px 7px}.resetFooter{text-align:center;padding:4px 12px 28px}.resetFooter .reset{font-size:11px;padding:6px 9px;color:#8993a0;text-decoration:none;border:1px solid #e1e6ed;border-radius:20px;background:#fff}
+.podcastPanel{overflow:hidden}.podcastHero{background:linear-gradient(135deg,#142d4e,#285b7e);color:#fff;border-radius:15px;padding:18px;margin-bottom:15px}.podcastHero h2{margin:5px 0;font-size:22px}.podcastHero p{margin:0;color:#dbe7f2;font-size:12px}.playerCard{border:1px solid #e0e7ef;border-radius:16px;padding:15px;background:#fbfcfe}.nowPlaying{display:flex;align-items:center;gap:12px;margin-bottom:12px}.albumArt{width:58px;height:58px;flex:0 0 58px;border-radius:14px;background:linear-gradient(145deg,#173e68,#c59a43);display:grid;place-items:center;font-size:27px;color:white}.trackMeta{min-width:0}.trackMeta small{display:block;color:#718096;font-size:10px;font-weight:800;letter-spacing:1px}.trackMeta strong{display:block;font-size:15px;overflow-wrap:anywhere}.seekRow{display:flex;align-items:center;gap:8px;font-size:11px;color:#66758a}.seekRow input{flex:1;min-width:0;accent-color:#173e68}.playerControls{display:flex;align-items:center;justify-content:center;gap:10px;margin:13px 0}.playerControls button{border:0;border-radius:50%;width:40px;height:40px;background:#eaf0f6;color:#173e68;font-size:17px;font-weight:800}.playerControls .playMain{width:52px;height:52px;background:#173e68;color:white;font-size:21px}.playerOptions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.playerOptions label{font-size:10px}.playerOptions select{padding:9px;font-size:12px}.volumeRow{display:flex;align-items:center;gap:9px;margin-top:12px;color:#64748b}.volumeRow input{flex:1;accent-color:#173e68}.playlistHead{display:flex;justify-content:space-between;align-items:center;margin:17px 0 9px}.playlistHead h3{font-size:15px;margin:0}.playlistHead span{font-size:11px;color:#718096}.trackList{display:grid;gap:7px;max-height:420px;overflow:auto}.trackItem{display:flex;align-items:center;gap:10px;width:100%;border:1px solid #e5eaf0;border-radius:11px;background:#fff;padding:10px;text-align:left;color:#25364b}.trackItem.active{border-color:#173e68;background:#eef4fa}.trackNum{width:28px;height:28px;border-radius:8px;background:#eef2f7;display:grid;place-items:center;font-size:11px;font-weight:800;flex:0 0 28px}.trackItem strong{font-size:12px;font-weight:700;overflow-wrap:anywhere}.trackItem small{display:block;color:#8090a2;font-size:10px}.schoolLevels .levelBtn[data-level="10"]{grid-column:span 3}
+.offlineTrackBtn{border:1px solid #d5e0eb;background:#f5f8fc;color:#174b7c;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800;white-space:nowrap}
+.trackItem{justify-content:space-between}.trackItem>span:nth-child(2){flex:1;min-width:0}
+.offlineTrackBtn.saved{background:#e8f5ed;border-color:#b9dfc9;color:#176442}
+
+
+</style></head><body>
+<header><details class="headerMenu"><summary class="menuButton" aria-label="Plis opsyon">•••</summary><div class="menuPanel"><button id="openPodcastBtn" class="menuAction">🎧 <span>KREYÒL PODCASTS</span></button></div></details><div class="eyebrow">PWOGRAM LEKTI BIB La</div><h1>Gid Lekti Bib la</h1><p>Chwazi mwa ak jou • Louvri chapit yo nan YouVersion • Make pwogrè ou</p></header>
+<main class="wrap">
+<div id="gidHome">
+<div id="installBox" class="install">Enstale aplikasyon an sou telefòn ou pou ouvri li tankou yon aplikasyon.<button id="installBtn">Enstale</button><div style="clear:both"></div></div>
+<section class="panel"><div class="controls"><div><label for="month">CHWAZI MWA</label><select id="month"></select></div><div><label for="day">CHWAZI JOU</label><select id="day"></select></div></div></section>
+<section class="panel"><div class="daytitle"><h2 id="dayHeading">Lekti jounen an</h2><span class="tag" id="status">POKO FINI</span></div>
+<div class="readings" id="readings"></div><button class="mark" id="markBtn">✓ Make jounen sa a kòm fini</button></section>
+<section class="panel"><div class="progressrow"><b>Pwogrè jeneral</b><b id="percent">0%</b></div><div class="bar"><div class="fill" id="fill"></div></div>
+<div class="stats"><div class="stat"><b id="doneCount">0</b><span>JOU FINI</span></div><div class="stat"><b id="leftCount">365</b><span>JOU KI RETE</span></div><div class="stat"><b id="totalCount">365</b><span>TOTAL JOU</span></div></div></section>
+
+<div class="foot">GID LEKTI BIB LA • Peze sou chak chapit pou ouvri li nan YouVersion (BSA). Done pwogrè yo rete sou aparèy sa a.</div>
+</div>
+<section id="booksPage" class="bottomPage hidden">
+ <div class="panel"><div class="sectionHead"><span>📖</span><div><h2>Konnen liv bib la</h2><p>66 liv Bib la, depi Jenèz rive Malachi, epi Nouvo Testaman an.</p></div></div>
+ <div class="bookGroup"><button class="accordion" aria-expanded="false" data-open="oldBooks">📜 Ansyen Testaman <span>39 liv　＋</span></button><div id="oldBooks" class="bookList hidden"></div></div>
+ <div class="bookGroup"><button class="accordion" aria-expanded="false" data-open="newBooks">✝️ Nouvo Testaman <span>27 liv　＋</span></button><div id="newBooks" class="bookList hidden"></div></div>
+ <div class="bookGroup"><button class="accordion" aria-expanded="false" data-open="bible66Exercise"><span>📝 Egzèsis pou konnen 66 liv Bib la</span><span>＋</span></button><div id="bible66Exercise" class="bookList hidden">
+  <p class="small">66 kesyon melanje o aza. Pou chak liv, ekri liv ki vini anvan li ak liv ki vini apre li. Chak kesyon vo 1 pwen.</p>
+  <button id="startBible66" class="mark">Kòmanse egzèsis 66 kesyon yo</button>
+  <div id="bible66Area" class="panel hidden" aria-live="polite"></div>
+  <div class="panel"><h3>Dènye rezilta</h3><div id="bible66Results" class="small">Ou poko fè egzèsis 66 liv Bib la.</div></div>
+ </div></div></div>
+</section>
+<section id="projectorPage" class="bottomPage hidden">
+ <div class="panel"><div class="sectionHead"><span>📽️</span><div><h2>Sèvis Pwojektè</h2><p>Abreviyasyon liv Bib yo ak orè sèvis pwojektè Novanm 2026.</p></div></div>
+ <div class="bookGroup"><button class="accordion" aria-expanded="false" data-open="projectorBooks">📚 Liv Bib la ak abrevyasyon <span>66 liv　＋</span></button><div id="projectorBooks" class="bookList hidden">
+  <div class="bookGroup"><button class="accordion" aria-expanded="false" data-open="projectorOldBooks">📜 Ansyen Testaman <span>39 liv　＋</span></button><div id="projectorOldBooks" class="bookList hidden"></div></div>
+  <div class="bookGroup"><button class="accordion" aria-expanded="false" data-open="projectorNewBooks">✝️ Nouvo Testaman <span>27 liv　＋</span></button><div id="projectorNewBooks" class="bookList hidden"></div></div>
+ </div></div>
+ <div class="bookGroup"><button class="accordion" aria-expanded="false" data-open="abbrev66Exercise">📝 Egzèsis Sèvis Pwojektè <span>＋</span></button><div id="abbrev66Exercise" class="bookList hidden">
+  <p class="small">132 kesyon: ekri abrevyasyon chak liv, epi idantifye liv la apati abrevyasyon li. Kesyon yo melanje o aza; chak kesyon vo 1 pwen.</p>
+  <button id="startAbbrev66" class="mark">Kòmanse egzèsis abrevyasyon yo (132 kesyon)</button>
+  <div id="abbrev66Area" class="panel hidden" aria-live="polite"></div>
+  <div class="panel"><h3>Dènye rezilta</h3><div id="abbrev66Results" class="small">Ou poko fè egzèsis abrevyasyon yo.</div></div>
+ </div></div>
+ <label for="projectorSearch">Chèche non, dat, jou oswa lè sèvis la</label><input id="projectorSearch" type="search" placeholder="Egzanp: Djounaylie, 07, Samdi, Maten oswa Swa">
+ <p id="projectorCount" class="small"></p><div id="projectorResults"></div>
+ <div class="note">Rapèl: Tout moun ki gen sèvis dwe rive bonè pou prepare chante, prezantasyon ak lòt materyèl ki nesesè.</div></div>
+</section>
+<section id="hostingPage" class="bottomPage hidden"><div class="panel"><div class="sectionHead"><span>🤝</span><div><h2>Akèy</h2><p>Pwogram Akèy Novanm 2026.</p></div></div><label for="hostingSearch">Chèche non, dat, jou, maten, swa oswa responsablite</label><input id="hostingSearch" placeholder="Egzanp: MARQUEZ, ANA-LOUISE, 15, Antre"><p id="hostingCount" class="small"></p><div id="hostingResults"></div></div></section>
+<section id="morePage" class="bottomPage hidden">
+ <div class="panel">
+ <section id="cleaningPage" class="moreSubPage hidden"><div class="sectionHead"><span>🧹</span><div><h2>Netwayaj</h2><p>Pwogram Netwayaj Novanm 2026.</p></div></div><label for="cleaningSearch">Chèche non, dat oswa jou sèvis la</label><input id="cleaningSearch" placeholder="Egzanp: ANALISE, 04, Mèkredi"><p id="cleaningCount" class="small"></p><div id="cleaningResults"></div></section>
+ <section id="schoolPage" class="moreSubPage hidden">
+
+ <div class="panel"><div class="sectionHead"><span>🎓</span><div><h2>Lekòl Dimanch</h2><p>Chwazi nivo lekòl ou vle konsilte a. Chak nivo gen pwòp seksyon pa li.</p></div></div>
+ <div class="schoolLevels" role="group" aria-label="Nivo lekòl">
+ <button class="levelBtn" data-level="1" aria-pressed="false">Nivo 01</button><button class="levelBtn" data-level="2" aria-pressed="false">Nivo 02</button><button class="levelBtn" data-level="3" aria-pressed="false">Nivo 03</button><button class="levelBtn" data-level="4" aria-pressed="false">Nivo 04</button><button class="levelBtn" data-level="5" aria-pressed="false">Nivo 05</button><button class="levelBtn" data-level="6" aria-pressed="false">Nivo 06</button><button class="levelBtn" data-level="7" aria-pressed="false">Nivo 07</button><button class="levelBtn" data-level="8" aria-pressed="false">Nivo 08</button><button class="levelBtn active" data-level="9" aria-pressed="true">Nivo 09</button><button class="levelBtn" data-level="10" aria-pressed="false">Granmoun yo</button>
+ </div><div id="schoolContent" class="schoolContent" aria-live="polite"></div></div>
+ </section>
+ <section id="podcastPage" class="moreSubPage hidden">
+  <div class="panel podcastPanel">
+   <div class="podcastHero"><div class="eyebrow">BIBLIYOTÈK ODYO</div><h2>🎧 KREYÒL PODCASTS</h2><p>Koute mesaj yo youn apre lòt, chwazi mòd melanj, vitès ak volim ou prefere.</p></div>
+   <div class="playerCard">
+    <div class="nowPlaying"><div class="albumArt">♫</div><div class="trackMeta"><small>KOUNYE A AP JWE</small><strong id="currentTrackTitle">Chwazi yon odyo</strong><span id="trackCounter" class="small">0 / 0</span></div></div>
+    <div class="seekRow"><span id="currentTime">0:00</span><input id="seekBar" type="range" min="0" max="1000" value="0"><span id="duration">0:00</span></div>
+    <div class="playerControls"><button id="prevTrack" aria-label="Odyo anvan">|◀</button><button id="backTrack" aria-label="Rekile 15 segonn">−15</button><button id="playTrack" class="playMain" aria-label="Jwe oswa kanpe">▶</button><button id="forwardTrack" aria-label="Avanse 15 segonn">+15</button><button id="nextTrack" aria-label="Odyo apre">▶|</button></div>
+    <div class="playerOptions"><div><label for="playMode">MÒD REPWODIKSYON</label><select id="playMode"><option value="all">Youn apre lòt</option><option value="one">Repete menm odyo a</option><option value="stop">Kanpe nan fen</option></select></div><div><label for="shuffleMode">MELANJ</label><select id="shuffleMode"><option value="off">Dezaktive</option><option value="on">Otomatik</option></select></div><div><label for="speedMode">VITÈS</label><select id="speedMode"><option>0.5</option><option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>2</option></select></div></div>
+    <div class="volumeRow">🔊 <label for="volumeMode">Volim</label><input id="volumeMode" type="range" min="0" max="1" step="0.01" value="0.85"><span id="volumeValue">85%</span></div>
+   </div>
+   <div class="offlineBox" style="margin-top:14px;padding:12px;border:1px solid #dce5ef;border-radius:13px;background:#f5f8fc">
+    <div style="font-weight:800;color:#173e68;font-size:13px">📥 Telechajman pou koute san entènèt</div>
+    <p class="small" style="margin:5px 0 10px">Telechaje odyo yo sou telefòn ou. Apre sa, ou ka koute yo san koneksyon, depi done navigatè a pa efase.</p>
+    <button id="downloadAllPodcasts" class="mark" style="margin-top:0">⬇ Telechaje tout 70 odyo yo</button>
+    <div class="progressrow" style="margin-top:10px"><span id="offlineProgressText">0 / 70 telechaje</span><b id="offlineProgressPercent">0%</b></div>
+    <div class="bar"><div id="offlineProgressBar" class="fill"></div></div>
+    <p id="offlineStatus" class="small" role="status" aria-live="polite">Ou ka telechaje chak odyo apa tou.</p>
+   </div>
+   <div class="playlistHead"><h3>Lis tout odyo yo</h3><span id="playlistCount">70 odyo</span></div><div id="trackList" class="trackList"></div>
+   <audio id="podcastAudio" preload="metadata"><source id="podcastAudioSource" type="audio/mp4"></audio><p id="audioStatus" class="small" role="status" aria-live="polite">Chwazi yon odyo pou kòmanse koute.</p>
+  </div>
+ </section>
+ </div>
+</section>
+</main>
+<div class="resetFooter"><button id="resetBtn" class="reset">↻ Reyajiste tout pwogrè mwen</button></div>
+<div id="sectionPopup" class="sectionPopup hidden" role="menu" aria-label="Lòt seksyon">
+ <button class="popupItem" data-open-section="cleaningPage" role="menuitem"><span>🧹</span><b>Netwayaj</b></button>
+ <button class="popupItem" data-open-section="schoolPage" role="menuitem"><span>🎓</span><b>Lekòl Dimanch</b></button>
+ </div>
+<nav class="bottomNav" aria-label="Navigasyon prensipal"><button class="navItem active" data-page="home"><span>⌂</span><small>Gid Lekti</small></button><button class="navItem" data-page="booksPage"><span>📖</span><small>Konnen liv bib la</small></button><button class="navItem" data-page="projectorPage"><span>📽️</span><small>Sèvis Pwojektè</small></button><button class="navItem" data-page="hostingPage"><span>🤝</span><small>Akèy</small></button><button class="navItem moreNav" id="moreNavBtn" aria-label="Lòt seksyon" title="Lòt seksyon" aria-expanded="false"><span>•••</span></button></nav>
+<script>
+const months=[["Janvye", "janvye"], ["Fevriye", "fevriye"], ["Mas", "mas"], ["Avril", "avril"], ["Me", "me"], ["Jen", "jen"], ["Jiyè", "jiye"], ["Out", "out"], ["Septanm", "septanm"], ["Oktòb", "oktob"], ["Novanm", "novanm"], ["Desanm", "desanm"]];
+const data={"janvye":[{"day":1,"readings":["Sòm 1","Matye 1-2","Jenèz 1-2"]},{"day":2,"readings":["Sòm 2","Matye 3-4","Jenéz 3-4"]},{"day":3,"readings":["Sòm 3","Matye 5-6","Jenéz 5-6"]},{"day":4,"readings":["Sòm 4","Matye 7-8","Jenéz 7-8"]},{"day":5,"readings":["Sòm 5","Matye 9-10","Jenéz 9-10"]},{"day":6,"readings":["Sòm 6","Matye 11-12","Jenéz 11-12"]},{"day":7,"readings":["Sòm 7","Matye 13-14","Jenèz 13-14"]},{"day":8,"readings":["Sòm 8","Matye 15-16","Jenéz 15-16"]},{"day":9,"readings":["Sòm 9","Matye 17-18","Jenéz 17-18"]},{"day":10,"readings":["Sòm 10","Matye 19-20","Jenéz 19-20"]},{"day":11,"readings":["Sòm 11","Matye 21-22","Jenéz 21-22"]},{"day":12,"readings":["Sòm 12","Matye 23-24","Jenéz 23-24"]},{"day":13,"readings":["Sòm 13","Matye 25-26","Jenéz 25-26"]},{"day":14,"readings":["Sòm 14","Matye 27-28","Jenéz 27-28"]},{"day":15,"readings":["Sòm 15","Mak 1-2","Jenéz 29-30"]},{"day":16,"readings":["Sòm 16","Mak 3-4","Jenéz 31-32"]},{"day":17,"readings":["Sòm 17","Mak 5-6","Jenéz 33-34"]},{"day":18,"readings":["Sòm 18","Mak 7-8","Jenéz 35-36"]},{"day":19,"readings":["Sòm 19","Mak 9-10","Jenéz 37-38"]},{"day":20,"readings":["Sòm 20","Mak 11-12","Jenéz 39-40"]},{"day":21,"readings":["Sòm 21","Mak 13","Jenèz 41-42"]},{"day":22,"readings":["Sòm 22","Mak 14","Jenéz 43-44"]},{"day":23,"readings":["Sòm 23","Mak 15-16","Jenéz 45-46"]},{"day":24,"readings":["Sòm 24","Lik 1","Jenéz 47-48"]},{"day":25,"readings":["Sòm 25","Lik 2","Jenéz 49-50"]},{"day":26,"readings":["Sòm 26","Lik 3-4","Egzòd 1-2"]},{"day":27,"readings":["Sòm 27","Lik 5-6","Egzòd 3-4"]},{"day":28,"readings":["Sòm 28","Lik 7","Egzòd 5-6"]},{"day":29,"readings":["Sòm 29","Lik 8","Egzòd 7-8"]},{"day":30,"readings":["Sòm 30","Lik 9-10","Egzòd 9-10"]},{"day":31,"readings":["Sòm 31","Lik 11","Egzòd 11-12"]}],"fevriye":[{"day":1,"readings":["Sòm 32","Lik 12-13","Egzòd 13-14"]},{"day":2,"readings":["Sòm 33","Lik 14-15","Egzòd 15-16"]},{"day":3,"readings":["Sòm 34","Lik 16-17","Egzòd 17-18"]},{"day":4,"readings":["Sòm 35","Lik 18-19","Egzòd 19-20"]},{"day":5,"readings":["Sòm 36","Lik 20-21","Egzòd 21-22"]},{"day":6,"readings":["Sòm 37","Lik 22","Egzòd 23-24"]},{"day":7,"readings":["Sòm 38","Lik 23-24","Egzòd 25-26"]},{"day":8,"readings":["Sòm 39","Jan 1-2","Egzòd 27-28"]},{"day":9,"readings":["Sòm 40","Jan 3-4","Egzòd 29-30"]},{"day":10,"readings":["Sòm 41","Jan 5","Egzòd 31-32"]},{"day":11,"readings":["Sòm 42","Jan 6","Egzòd 33-34"]},{"day":12,"readings":["Sòm 43","Jan 7-8","Egzòd 35-36"]},{"day":13,"readings":["Sòm 44","Jan 9-10","Egzòd 37-38"]},{"day":14,"readings":["Sòm 45","Jan 11-12","Egzòd 39-40"]},{"day":15,"readings":["Sòm 46","Jan 13-14","Levitik 1-2"]},{"day":16,"readings":["Sòm 47","Jan 15-16","Levitik 3-4"]},{"day":17,"readings":["Sòm 48","Jan 17-18","Levitik 5-6"]},{"day":18,"readings":["Sòm 49","Jan 19-20","Levitik 7-8"]},{"day":19,"readings":["Sòm 50","Jan 21","Levitik 9-10"]},{"day":20,"readings":["Sòm 51","Travay 1-2","Levitik 11-12"]},{"day":21,"readings":["Sòm 52","Travay 3-4","Levitik 13-14"]},{"day":22,"readings":["Sòm 53","Travay 5-6","Levitik 15-16"]},{"day":23,"readings":["Sòm 54","Travay 7-8","Levitik 17-18"]},{"day":24,"readings":["Sòm 55","Travay 9-10","Levitik 19-20"]},{"day":25,"readings":["Sòm 56","Travay 11-12","Levitik 21-22"]},{"day":26,"readings":["Sòm 57","Travay 13-14","Levitik 23-24"]},{"day":27,"readings":["Sòm 58","Travay 15-16","Levitik 25-26"]},{"day":28,"readings":["Sòm 59","Travay 17-18","Levitik 27"]}],"mas":[{"day":1,"readings":["Sòm 60","Travay 19-20","Nonb 1-2"]},{"day":2,"readings":["Sòm 61","Travay 21-22","Nonb 3-4"]},{"day":3,"readings":["Sòm 62","Travay 23-24","Nonb 5-6"]},{"day":4,"readings":["Sòm 63","Travay 25-26","Nonb 7-8"]},{"day":5,"readings":["Sòm 64","Travay 27-28","Nonb 9-10"]},{"day":6,"readings":["Sòm 65","Women 1-2","Nonb 11-12"]},{"day":7,"readings":["Sòm 66","Women 3-4","Nonb 13-14"]},{"day":8,"readings":["Sòm 67","Women 5-6","Nonb 15-16"]},{"day":9,"readings":["Sòm 68","Women 7-8","Nonb 17-18"]},{"day":10,"readings":["Sòm 69","Women 9-10","Nonb 19-20"]},{"day":11,"readings":["Sòm 70","Women 11-12","Nonb 21-22"]},{"day":12,"readings":["Sòm 71","Women 13-14","Nonb 23-24"]},{"day":13,"readings":["Sòm 72","Women 15-16","Nonb 25-26"]},{"day":14,"readings":["Sòm 73","1 Korentyen 1-2","Nonb 27-28"]},{"day":15,"readings":["Sòm 74","1 Korentyen 3-4","Nonb 29-30"]},{"day":16,"readings":["Sòm 75","1 Korentyen 5-6","Nonb 31-32"]},{"day":17,"readings":["Sòm 76","1 Korentyen 7-8","Nonb 33-34"]},{"day":18,"readings":["Sòm 77","1 Korentyen 9-10","Nonb 35-36"]},{"day":19,"readings":["Sòm 78","1 Korentyen 11-12","Detewonòm 1-2"]},{"day":20,"readings":["Sòm 79","1 Korentyen 13-14","Detewonòm 3-4"]},{"day":21,"readings":["Sòm 80","1 Korentyen 15-16","Detewonòm 5-6"]},{"day":22,"readings":["Sòm 81","2 Korentyen 1-2","Detewonòm 7-8"]},{"day":23,"readings":["Sòm 82","2 Korentyen 3-4","Detewonòm 9-10"]},{"day":24,"readings":["Sòm 83","2 Korentyen 5-6","Detewonòm 11-12"]},{"day":25,"readings":["Sòm 84","2 Korentyen 7-8","Detewonòm 13-14"]},{"day":26,"readings":["Sòm 85","2 Korentyen 9-10","Detewonòm 15-16"]},{"day":27,"readings":["Sòm 86","2 Korentyen 11-12","Detewonòm 17-18"]},{"day":28,"readings":["Sòm 87","2 Korentyen 13","Detewonòm 19-20"]},{"day":29,"readings":["Sòm 88","Galat 1-2","Detewonòm 21-22"]},{"day":30,"readings":["Sòm 89","Galat 3-4","Detewonòm 23-24"]},{"day":31,"readings":["Sòm 90","Galat 5-6","Detewonòm 25-26"]}],"avril":[{"day":1,"readings":["Sòm 91","Efezyen 1-2","Detewonòm 27-28"]},{"day":2,"readings":["Sòm 92","Efezyen 3-4","Detewonòm 29-30"]},{"day":3,"readings":["Sòm 93","Efezyen 5-6","Detewonòm 31-32"]},{"day":4,"readings":["Sòm 94","Filipyen 1-2","Detewonòm 33-34"]},{"day":5,"readings":["Sòm 95","Filipyen 3-4","Jozye 1-2"]},{"day":6,"readings":["Sòm 96","Kolosyen 1-2","Jozye 3-4"]},{"day":7,"readings":["Sòm 97","Kolosyen 3-4","Jozye 5-6"]},{"day":8,"readings":["Sòm 98","1 Tesalonisyen 1-2","Jozye 7-8"]},{"day":9,"readings":["Sòm 99","1 Tesalonisyen 3-5","Jozye 9-10"]},{"day":10,"readings":["Sòm 100","2 Tesalonisyen 1-3","Jozye 11-12"]},{"day":11,"readings":["Sòm 101","1 Timote 1-2","Jozye 13-14"]},{"day":12,"readings":["Sòm 102","1 Timote 3-4","Jozye 15-16"]},{"day":13,"readings":["Sòm 103","1 Timote 5-6","Jozye 17-18"]},{"day":14,"readings":["Sòm 104","2 Timote 1-2","Jozye 19-20"]},{"day":15,"readings":["Sòm 105","2 Timote 3-4","Jozye 21-22"]},{"day":16,"readings":["Sòm 106","Tit 1-2","Jozye 23-24"]},{"day":17,"readings":["Sòm 107","Tit 3","Jij 1-2"]},{"day":18,"readings":["Sòm 108","Filemon","Jij 3-4"]},{"day":19,"readings":["Sòm 109","Ebre 1-2","Jij 5-6"]},{"day":20,"readings":["Sòm 110","Ebre 3-4","Jij 7-8"]},{"day":21,"readings":["Sòm 111","Ebre 5-6","Jij 9-10"]},{"day":22,"readings":["Sòm 112","Ebre 7-8","Jij 11-12"]},{"day":23,"readings":["Sòm 113","Ebre 9-10","Jij 13-14"]},{"day":24,"readings":["Sòm 114","Ebre 11-12","Jij 15-16"]},{"day":25,"readings":["Sòm 115","Ebre 13","Jij 17-18"]},{"day":26,"readings":["Sòm 116","Jak 1-2","Jij 19-20"]},{"day":27,"readings":["Sòm 117","Jak 3","Jij 21"]},{"day":28,"readings":["Sòm 118","Jak 4-5","Rit 1-2"]},{"day":29,"readings":["Sòm 119","—","—"]},{"day":30,"readings":["Sòm 120","1 Pyè 1-2","Rit 3-4"]}],"me":[{"day":1,"readings":["Sòm 121","1 Pyè 3-4","1 Samyèl 1-2"]},{"day":2,"readings":["Sòm 122","1 Pyè 5","1 Samyèl 3-4"]},{"day":3,"readings":["Sòm 123","2 Pyè 1-2","1 Samyèl 5-6"]},{"day":4,"readings":["Sòm 124","2 Pyè 3","1 Samyèl 7-8"]},{"day":5,"readings":["Sòm 125","1 Jan 1-2","1 Samyèl 9-10"]},{"day":6,"readings":["Sòm 126","1 Jan 3-4","1 Samyèl 11-12"]},{"day":7,"readings":["Sòm 127","1 Jan5","1 Samyèl 13-15"]},{"day":8,"readings":["Sòm 128","2 Jan","1 Samyèl 16-18"]},{"day":9,"readings":["Sòm 129","3 Jan","1 Samyèl 19-21"]},{"day":10,"readings":["Sòm 130","Jid","1 Samyèl 22-24"]},{"day":11,"readings":["Sòm 131","Revelasyon 1-2","1 Samyèl 25-26"]},{"day":12,"readings":["Sòm 132","Revelasyon 3-4","1 Samyèl 27-28"]},{"day":13,"readings":["Sòm 133","Revelasyon 5","1 Samyèl 29-31"]},{"day":14,"readings":["Sòm 134","Revelasyon 6","2 Samyèl 1-2"]},{"day":15,"readings":["Sòm 135","Revelasyon 7-8","2 Samyèl 3-4"]},{"day":16,"readings":["Sòm 136","Revelasyon 9-10","2 Samyèl 5-6"]},{"day":17,"readings":["Sòm 137","Revelasyon 11","2 Samyèl 7-8"]},{"day":18,"readings":["Sòm 138","Revelasyon 12","2 Samyèll 9-10"]},{"day":19,"readings":["Sòm 139","Revelasyon 13","2 Samyèl 11-12"]},{"day":20,"readings":["Sòm 140","Revelasyon 14","2 Samyèl 13-14"]},{"day":21,"readings":["Sòm 141","Revelasyon 15-16","2 Samyèl 15-16"]},{"day":22,"readings":["Sòm 142","Revelasyon 17-18","2 Samyèl 17-18"]},{"day":23,"readings":["Sòm 143","Revelasyon 19-20","2 Samyel 19-20"]},{"day":24,"readings":["Sòm 144","Revelasyon 21-22","2 Samyèl 21-22"]},{"day":25,"readings":["Sòm 145","Matye 1-2","2 Samyèl 23-24"]},{"day":26,"readings":["Sòm 146","Matye 3-4","1 Wa 1-2"]},{"day":27,"readings":["Sòm 147","Matye 5-6","1 Wa 3-4"]},{"day":28,"readings":["Sòm 148","Matye 7-8","1 Wa 5-6"]},{"day":29,"readings":["Sòm 149","Matye 9-10","1 Wa 7-8"]},{"day":30,"readings":["Sòm 150","Matye 11-12","1 Wa 9-10"]},{"day":31,"readings":["Pwovèb 1","Matye 13-14","1 Wa 11-12"]}],"jen":[{"day":1,"readings":["Pwovèb 2","Matye 15-16","1 Wa 13-14"]},{"day":2,"readings":["Pwovèb 3","Matye 17-18","1 Wa 15-16"]},{"day":3,"readings":["Pwovèb 4","Matye 19-20","1 Wa 17-18"]},{"day":4,"readings":["Pwovèb 5","Matye 21-22","1 Wa 19-20"]},{"day":5,"readings":["Pwovèb 6","Matye 23","1 Wa 21-22"]},{"day":6,"readings":["Pwovèb 7","Matye 24","2 Wa 1-2"]},{"day":7,"readings":["Pwovèb 8","Matye 25","2 Wa 3-4"]},{"day":8,"readings":["Pwovèb 9","Matye 26","2 Wa 5-6"]},{"day":9,"readings":["Pwovèb 10","Matye 27-28","2 Wa 7-8"]},{"day":10,"readings":["Pwovèb 11","Mak 1-2","2 Wa 9-10"]},{"day":11,"readings":["Pwovèb 12","Mak 3-4","2 Wa 11-12"]},{"day":12,"readings":["Pwovèb 13","Mak 5-6","2 Wa 13-14"]},{"day":13,"readings":["Pwovèb 14","Mak 7-8","2 Wa 15-16"]},{"day":14,"readings":["Pwovèb 15","Mak 9-10","2 Wa 17-18"]},{"day":15,"readings":["Pwovèb 16","Mak 11-12","2 Wa 19-20"]},{"day":16,"readings":["Pwovèb 17","Mak 13","2 Wa 21-22"]},{"day":17,"readings":["Pwovèb 18","Mak 14","2 Wa 23-25"]},{"day":18,"readings":["Pwovèb 19","Mak 15","1 Kwonik 1-3"]},{"day":19,"readings":["Pwovèb 20","Mak 16","1 Kwonik 4-6"]},{"day":20,"readings":["Pwovèb 21","Lik 1","1 Kwonik 7-9"]},{"day":21,"readings":["Pwovèb 22","Lik 2","1 Kwonik 10-11"]},{"day":22,"readings":["Pwovèb 23","Lik 3","1 Kwonik 12-14"]},{"day":23,"readings":["Pwovèb 24","Lik 4","1 Kwonik 15-17"]},{"day":24,"readings":["Pwovèb 25","Lik 5","1 Kwonik 18-20"]},{"day":25,"readings":["Pwovèb 26","Lik 6","1 Kwonik 21-22"]},{"day":26,"readings":["Pwovèb 27","Lik 7","1 Kwonik 23-24"]},{"day":27,"readings":["Pwovèb 28","Lik 8","1 Kwonik 25-27"]},{"day":28,"readings":["Pwovèb 29","Lik 9","1 Kwonik 28-29"]},{"day":29,"readings":["Pwovèb 30","Lik 10","2 Kwonik 1-3"]},{"day":30,"readings":["Pwovèb 31","Lik 11","2 Kwonik 4-6"]}],"jiye":[{"day":1,"readings":["Sòm 1","Lik 12","2 Kwonik 7-9"]},{"day":2,"readings":["Sòm 2","Lik 13","2 Kwonik 10-11"]},{"day":3,"readings":["Sòm 3","Lik 14","2 Kwonik 12-13"]},{"day":4,"readings":["Sòm 4","Lik 15-16","2 Kwonik 14-15"]},{"day":5,"readings":["Sòm 5","Lik 17","2 Kwonik 16-17"]},{"day":6,"readings":["Sòm 6","Lik 18","2 Kwonik 18-19"]},{"day":7,"readings":["Sòm 7","Lik 19","2 Kwonik 20-21"]},{"day":8,"readings":["Sòm 8","Lik 20","2 Kwonik 22-23"]},{"day":9,"readings":["Sòm 9","Lik 21","2 Kwonik 24-25"]},{"day":10,"readings":["Sòm 10","Lik 22","2 Kwonik 26-27"]},{"day":11,"readings":["Sòm 11","Lik 23","2 Kwonik 28-29"]},{"day":12,"readings":["Sòm 12","Lik 24","2 Kwonik 30-31"]},{"day":13,"readings":["Sòm 13","Jan1","2 Kwonik 32-33"]},{"day":14,"readings":["Sòm 14","Jan 2","2 Kwonik 34-36"]},{"day":15,"readings":["Sòm 15","Jan 3","Esdras 1-2"]},{"day":16,"readings":["Sòm 16","Jan 4","Esdras 3-4"]},{"day":17,"readings":["Sòm 17","Jan 5","Esdras 5-6"]},{"day":18,"readings":["Sòm 18","Jan 6","Esdras 7-8"]},{"day":19,"readings":["Sòm 19","Jan7","Esdras 9-10"]},{"day":20,"readings":["Sòm 20","Jan 8","Neyemi 1-3"]},{"day":21,"readings":["Sòm 21","Jan9","Neyemi 4-5"]},{"day":22,"readings":["Sòm 22","Jan 10","Neyemi 6-8"]},{"day":23,"readings":["Sòm 23","Jan 11","Neyemi 9-11"]},{"day":24,"readings":["Sòm 24","Jan 12","Neyemi 12-13"]},{"day":25,"readings":["Sòm 25","Jan 13-14","Esté 1-2"]},{"day":26,"readings":["Sòm 26","Jan 15-16","Esté 3-4"]},{"day":27,"readings":["Sòm 27","Jan 17","Esté 5-7"]},{"day":28,"readings":["Sòm 28","Jan 18","Esté 8-10"]},{"day":29,"readings":["Sòm 29","Jan 19","Job 1-2"]},{"day":30,"readings":["Sòm 30","Jan 20","Job 3-4"]},{"day":31,"readings":["Sòm 31","Jan 21","Job 5-6"]}],"out":[{"day":1,"readings":["Sòm 32","Travay 1-2","Job 7-8"]},{"day":2,"readings":["Sòm 33","Travay 3-4","Job 9-10"]},{"day":3,"readings":["Sòm 34","Travay 5-6","Job 11-12"]},{"day":4,"readings":["Sòm 35","Travay 7-8","Job 13-14"]},{"day":5,"readings":["Sòm 36","Travay 9-10","Job 15-16"]},{"day":6,"readings":["Sòm 37","Travay 11-12","Job 17-18"]},{"day":7,"readings":["Sòm 38","Travay 13","Job 19-20"]},{"day":8,"readings":["Sòm 39","Travay 14","Job 21-22"]},{"day":9,"readings":["Sòm 40","Travay 15","Job 23-24"]},{"day":10,"readings":["Sòm 41","Travay 16","Job 25-26"]},{"day":11,"readings":["Sòm 42","Travay 17-18","Job 27-28"]},{"day":12,"readings":["Sòm 43","Travay 19","Job 29-30"]},{"day":13,"readings":["Sòm 44","Travay 20","Job 31-32"]},{"day":14,"readings":["Sòm 45","Travay 21-22","Job 33-34"]},{"day":15,"readings":["Sòm 46","Travay 23-24","Job 35-36"]},{"day":16,"readings":["Sòm 47","Travay 25-26","Job 37-38"]},{"day":17,"readings":["Sòm 48","Travay 27","Job 39-40"]},{"day":18,"readings":["Sòm 49","Travay 28","Job 41-42"]},{"day":19,"readings":["Sòm 50","Women 1-2","Eklezyas 1-2"]},{"day":20,"readings":["Sòm 51","Women 3-4","Eklezyas 3-4"]},{"day":21,"readings":["Sòm 52","Women 5-6","Eklezyas 5-6"]},{"day":22,"readings":["Sòm 53","Women 7-8","Eklezyas 7-8"]},{"day":23,"readings":["Sòm 54","Women 9-10","Eklezyas 9-10"]},{"day":24,"readings":["Sòm 55","Women 11-12","Eklezyas 11-12"]},{"day":25,"readings":["Sòm 56","Women 13-14","Kantik 1-2"]},{"day":26,"readings":["Sòm 57","Women 15-16","Kantik 3-4"]},{"day":27,"readings":["Sòm 58","1 Korentyen 1-2","Kantik 5-6"]},{"day":28,"readings":["Sòm 59","1 Korentyen 3-4","Kantik 7-8"]},{"day":29,"readings":["Sòm 60","1 Korentyen 5-6","Ezayi 1-2"]},{"day":30,"readings":["Sòm 61","1 Korentyen 7-8","Ezayi 3-4"]},{"day":31,"readings":["Sòm 62","1 Korentyen 9-10","Ezayi 5-6"]}],"septanm":[{"day":1,"readings":["Sòm 63","1 Korentyen 11","Ezayi 7-8"]},{"day":2,"readings":["Sòm 64","1 Korentyen 12","Ezayi 9-10"]},{"day":3,"readings":["Sòm 65","1 Korentyen 13","Ezayi 11-12"]},{"day":4,"readings":["Sòm 66","1 Korentyen 14","Ezayi 13-14"]},{"day":5,"readings":["Sòm 67","1 Korentyen 15","Ezayi 15-16"]},{"day":6,"readings":["Sòm 68","1 Korentyen 16","Ezayi 17-18"]},{"day":7,"readings":["Sòm 69","2 Korentyen 1","Ezayi 19-20"]},{"day":8,"readings":["Sòm 70","2 Korentyen 2","Ezayi 21-22"]},{"day":9,"readings":["Sòm 71","2 Korentyen 3","Ezayi 23-24"]},{"day":10,"readings":["Sòm 72","2 Korentyen 4","Ezayi 25-26"]},{"day":11,"readings":["Sòm 73","2 Korentyen 5","Ezayi 27-28"]},{"day":12,"readings":["Sòm 74","2 Korentyen 6","Ezayi 29-30"]},{"day":13,"readings":["Sòm 75","2 Korentyen7","Ezayi 31-32"]},{"day":14,"readings":["Sòm 76","2 Korentyen 8","Ezayi 33-34"]},{"day":15,"readings":["Sòm 77","2 Korentyen 9","Ezayi 35-36"]},{"day":16,"readings":["Sòm 78","2 Korentyen 10","Ezayi 37-38"]},{"day":17,"readings":["Sòm 79","2 Korentyen 11","Ezayi 39-40"]},{"day":18,"readings":["Sòm 80","2 Korentyen 12","Ezayi 41-42"]},{"day":19,"readings":["Sòm 81","2 Korentyen 13","Ezayi 43-44"]},{"day":20,"readings":["Sòm 82","Galat 1","Ezayi 45-46"]},{"day":21,"readings":["Sòm 83","Galat 2","Ezayi 47-48"]},{"day":22,"readings":["Sòm 84","Galat 3","Ezayi 49-50"]},{"day":23,"readings":["Sòm 85","Galat 4","Ezayi 51-52"]},{"day":24,"readings":["Sòm 86","Galat 5","Ezayi 53-54"]},{"day":25,"readings":["Sòm 87","Galat 6","Ezayi 55-56"]},{"day":26,"readings":["Sòm 88","Efezyen 1","Ezayi 57-58"]},{"day":27,"readings":["Sòm 89","Efezyen 2","Ezayi 59-60"]},{"day":28,"readings":["Sòm 90","Efezyen 3","Ezayi 61-62"]},{"day":29,"readings":["Sòm 91","Efezyen 4","Ezayi 63-64"]},{"day":30,"readings":["Sòm 92","Efezyen 5","Ezayi 65-66"]}],"oktob":[{"day":1,"readings":["Sòm 93","Efezyen 6","Jeremi 1-2"]},{"day":2,"readings":["Sòm 94","Filipyen 1","Jeremi 3-4"]},{"day":3,"readings":["Sòm 95","Filipyen 2","Jeremi 5-6"]},{"day":4,"readings":["Sòm 96","Filipyen 3","Jeremi 7-8"]},{"day":5,"readings":["Sòm 97","Filipyen 4","Jeremi 9-10"]},{"day":6,"readings":["Sòm 98","Kolosyen 1","Jeremi 11-12"]},{"day":7,"readings":["Sòm 99","Kolosyen 2","Jeremi 13-14"]},{"day":8,"readings":["Sém 100","Kolosyen 3","Jeremi 15-16"]},{"day":9,"readings":["Sòm 101","Kolosyen 4","Jeremi 17-18"]},{"day":10,"readings":["Sòm 102","1 Tesalonisyen 1","Jeremi 19-20"]},{"day":11,"readings":["Sòm 103","1 Tesalonisyen 2","Jeremi 21-22"]},{"day":12,"readings":["Sòm 104","1 Tesalonisyen 3","Jeremi 23-24"]},{"day":13,"readings":["Sòm 105","1 Tesalonisyen 4","Jeremi 25-26"]},{"day":14,"readings":["Sòm 106","1 Tesalonisyen 5","Jeremi 27-28"]},{"day":15,"readings":["Sòm 107","2 Tesalonisyen 1","Jeremi 29-30"]},{"day":16,"readings":["Sòm 108","2 Tesalonisyen 2","Jeremi 31-32"]},{"day":17,"readings":["Sòm 109","2 Tesalonisyen 3","Jeremi 33-34"]},{"day":18,"readings":["Sòm 110","1 Timote 1","Jeremi 35-36"]},{"day":19,"readings":["Sòm 111","1 Timote 2","Jeremi 37-38"]},{"day":20,"readings":["Sòm 112","1 Timote 3","Jeremi 39-40"]},{"day":21,"readings":["Sòm 113","1 Timote 4","Jeremi 41-42"]},{"day":22,"readings":["Sòm 114","1 Timote 5","Jeremi 43-44"]},{"day":23,"readings":["Sòm 115","1 Timote 6","Jeremi 45-46"]},{"day":24,"readings":["Sòm 116","2 Timote 1","Jeremi 47-48"]},{"day":25,"readings":["Sòm 117","2 Timote 2","Jeremi 49-50"]},{"day":26,"readings":["Sòm 118","2 Timote 3","Jeremi 51-52"]},{"day":27,"readings":["Sòm 119","—","—"]},{"day":28,"readings":["Sòm 120","2 Timote 4","Lamantasyon 1-2"]},{"day":29,"readings":["Sòm 121","Tit 1","Lamantasyon 3-4"]},{"day":30,"readings":["Sòm 122","Tit2","Lamantasyon 5"]},{"day":31,"readings":["Sòm 123","Tit3","Ezekyèl 1-2"]}],"novanm":[{"day":1,"readings":["Sòm 124","Filemon","Ezekyèl 3-4"]},{"day":2,"readings":["Sòm 125","Ebre 1","Ezekyèl 5-6"]},{"day":3,"readings":["Sòm 126","Ebre 2","Ezekyèl 7-8"]},{"day":4,"readings":["Sòm 127","Ebre 3","Ezekyèl 9-10"]},{"day":5,"readings":["Sòm 128","Ebre 4","Ezekyèl 11-12"]},{"day":6,"readings":["Sòm 129","Ebre 5","Ezekyèl 13-14"]},{"day":7,"readings":["Sòm 130","Ebre 6","Ezekyèl 15-16"]},{"day":8,"readings":["Sòm 131","Ebre 7","Ezekyèl 17-18"]},{"day":9,"readings":["Sòm 132","Ebre 8","Ezekyèl 19-20"]},{"day":10,"readings":["Sòm 133","Ebre 9","Ezekyèl 21-22"]},{"day":11,"readings":["Sòm 134","Ebre 10","Ezekyèl 23-24"]},{"day":12,"readings":["Sòm 135","Ebre 11","Ezekyèl 25-26"]},{"day":13,"readings":["Sòm 136","Ebre 12","Ezekyèl 27-28"]},{"day":14,"readings":["Sòm 137","Ebre 13","Ezekyèl 29-30"]},{"day":15,"readings":["Sòm 138","Jak 1","Ezekyèl 31-32"]},{"day":16,"readings":["Sòm 139","Jak 2","Ezekyèl 33-34"]},{"day":17,"readings":["Sòm 140","Jak 3","Ezekyèl 35-36"]},{"day":18,"readings":["Sòm 141","Jak 4","Ezekyèl 37-38"]},{"day":19,"readings":["Sòm 142","Jak 5","Ezekyèl 39-40"]},{"day":20,"readings":["Sòm 143","1 Pyè 1","Ezekyèl 41-42"]},{"day":21,"readings":["Sòm 144","1 Pyè 2","Ezekyèl 43-44"]},{"day":22,"readings":["Sòm 145","1 Pyè3","Ezekyèl 45-46"]},{"day":23,"readings":["Sòm 146","1 Pyè 4","Ezekyèl 47-48"]},{"day":24,"readings":["Sòm 147","1 Pyè 5","Danyel 1-2"]},{"day":25,"readings":["Sòm 148","2 Pyè 1","Danyél 3-4"]},{"day":26,"readings":["Sòm 149","2 Pyè 2","Danyel 5-6"]},{"day":27,"readings":["Sòm 150","2 Pyè3","Danyél 7-8"]},{"day":28,"readings":["Pwovèb 1","1 Jan1","Danyél 9-10"]},{"day":29,"readings":["Pwovèb 2","1 Jan2","Danyel 11-12"]},{"day":30,"readings":["Pwovèb 3","1 Jan3","Oze 1-2"]}],"desanm":[{"day":1,"readings":["Pwovèb 4","1 Jan 4-5","Oze 3-5"]},{"day":2,"readings":["Pwovèb 5","2 Jan","Oze 6-8"]},{"day":3,"readings":["Pwovèb 6","3 Jan","Oze 9-10"]},{"day":4,"readings":["Pwovèb 7","Jid","Oze 11-12"]},{"day":5,"readings":["Pwovèb 8","Revelasyon 1","Oze 13-14"]},{"day":6,"readings":["Pwovèb 9","Revelasyon 2","Jowèl 1-3"]},{"day":7,"readings":["Pwovèb 10","Revelasyon 3","Amos 1-2"]},{"day":8,"readings":["Pwovèb 11","Revelasyon 4","Amos 3-4"]},{"day":9,"readings":["Pwovèb 12","Revelasyon 5","Amos 5-6"]},{"day":10,"readings":["Pwovèb 13","Revelasyon 6","Amos 7-9"]},{"day":11,"readings":["Pwovèb 14","Revelasyon 7","Abdyas"]},{"day":12,"readings":["Pwovèb 15","Revelasyon 8","Jonas 1-2"]},{"day":13,"readings":["Pwovèb 16","Revelasyon 9","Jonas 3-4"]},{"day":14,"readings":["Pwovèb 17","Revelasyon 10","Miche 1-2"]},{"day":15,"readings":["Pwovèb 18","Revelasyon 11","Miche 3-4"]},{"day":16,"readings":["Pwovèb 19","Revelasyon 12","Miche 5-7"]},{"day":17,"readings":["Pwovèb 20","Revelasyon 13","Nawoum 1-3"]},{"day":18,"readings":["Pwovèb 21","Revelasyon 14","Abakik 1-3"]},{"day":19,"readings":["Pwovèb 22","Revelasyon 15","Sofoni 1-3"]},{"day":20,"readings":["Pwovèb 23","Revelasyon 16","Aje 1-2"]},{"day":21,"readings":["Pwovèb 24","Revelasyon 17","Zakari 1-2"]},{"day":22,"readings":["Pwovèb 25","Revelasyon 18","Zakari 3-5"]},{"day":23,"readings":["Pwovèb 26","Revelasyon 19","Zakari 6-7"]},{"day":24,"readings":["Pwovèb 27","Revelasyon 20","Zakari 8-10"]},{"day":25,"readings":["Pwovèb 28","Revelasyon 21","Zakari 11-12"]},{"day":26,"readings":["Pwovèb 29","Revelasyon 22","Zakari 13-14"]},{"day":27,"readings":["Pwovèb 30","Lik 14","Malachi 1-2"]},{"day":28,"readings":["Pwovèb 31","Jan 17","Malachi 3-4"]},{"day":29,"readings":["Sòm 46","1 Tesalonisyen 5","Jij 6"]},{"day":30,"readings":["Sòm 47","2 Tesalonisyen 1","Jij 7-8"]},{"day":31,"readings":["Sòm 48","2 Tesalonisyen 2","Jij 9-10"]}]};
+const $=id=>document.getElementById(id),month=$('month'),day=$('day');
+let done={};try{done=JSON.parse(localStorage.getItem('bibleReadingDone')||'{}')}catch(e){done={}}
+months.forEach((m,i)=>{let o=document.createElement('option');o.value=i;o.textContent=m[0];month.append(o)});
+function key(){return month.value+'-'+day.value}
+function total(){return months.reduce((a,m)=>a+data[m[1]].length,0)}
+// Kòd liv yo swiv fòma YouVersion pou vèsyon BSA (Bible ID 3821).
+const bookCodes={
+ 'jenèz':'GEN','egzòd':'EXO','levitik':'LEV','nonb':'NUM','detewonòm':'DEU','jozye':'JOS','jij':'JDG','rit':'RUT','1 samyèl':'1SA','2 samyèl':'2SA','1 samyel':'1SA','2 samyel':'2SA','2 samyèll':'2SA','1 wa':'1KI','2 wa':'2KI','1 kwonik':'1CH','2 kwonik':'2CH','esdras':'EZR','neyemi':'NEH','esté':'EST','job':'JOB','sòm':'PSA','sém':'PSA','pwovèb':'PRO','eklezyas':'ECC','kantik':'SNG','ezayi':'ISA','jeremi':'JER','lamantasyon':'LAM','ezekyèl':'EZK','danyel':'DAN','danyél':'DAN','oze':'HOS','jowèl':'JOL','amos':'AMO','abdyas':'OBA','jonas':'JON','miche':'MIC','nawoum':'NAM','abakik':'HAB','sofoni':'ZEP','aje':'HAG','zakari':'ZEC','malachi':'MAL',
+ 'matye':'MAT','mak':'MRK','lik':'LUK','jan':'JHN','travay':'ACT','women':'ROM','1 korentyen':'1CO','2 korentyen':'2CO','galat':'GAL','efezyen':'EPH','filipyen':'PHP','kolosyen':'COL','1 tesalonisyen':'1TH','2 tesalonisyen':'2TH','1 timote':'1TI','2 timote':'2TI','tit':'TIT','filemon':'PHM','ebre':'HEB','jak':'JAS','1 pyè':'1PE','2 pyè':'2PE','1 jan':'1JN','2 jan':'2JN','3 jan':'3JN','jid':'JUD','revelasyon':'REV'
+};
+// Nòmalize non liv yo san efase tirè ki separe nimewo chapit yo.
+function normReference(s){
+ return s.toLocaleLowerCase('ht').normalize('NFD')
+  .replace(/[\u0300-\u036f]/g,'')
+  .replace(/[^a-z0-9\s-]/g,' ')
+  .replace(/\s+/g,' ').trim();
+}
+const bookAliases=Object.entries(bookCodes)
+ .map(([name,code])=>[normReference(name),code])
+ .sort((a,b)=>b[0].length-a[0].length);
+function chapterLinks(reference){
+ const normalized=normReference(reference);
+ for(const [alias,code] of bookAliases){
+   if(!normalized.startsWith(alias)) continue;
+   const tail=normalized.slice(alias.length).trim();
+   // Sipòte referans tankou Matye 1-2, Ezekyèl 9–10, Tit2 ak 1 Jan1.
+   const match=tail.match(/^(\d+)?(?:\s*[-–—]\s*(\d+))?$/);
+   if(!match) continue;
+   const first=match[1]?Number(match[1]):1;
+   const last=match[2]?Number(match[2]):first;
+   if(!Number.isInteger(first)||!Number.isInteger(last)||first<1||last<first||last-first>30) return [];
+   const links=[];
+   for(let ch=first;ch<=last;ch++){
+     links.push({chapter:ch,url:`https://bible.com/bible/3821/${code.toLowerCase()}.${ch}.BSA`});
+   }
+   return links;
+ }
+ return [];
+}
+function refresh(){
+ const m=months[+month.value],d=+day.value,entry=data[m[1]][d-1];
+ $('dayHeading').textContent=m[0]+' — Jou '+d;
+ $('readings').innerHTML='';
+ entry.readings.forEach((r,i)=>{
+   const card=document.createElement('div');card.className='reading';
+   const num=document.createElement('div');num.className='num';num.textContent='LIV '+(i+1);
+   const body=document.createElement('div');body.className='readingBody';
+   const label=document.createElement('small');label.textContent='LEKTI '+(i+1);
+   const value=document.createElement('strong');value.textContent=r==='—'?'Pa gen referans ki ekri nan tablo a pou lekti sa a.':r;
+   body.append(label,value);
+   const links=chapterLinks(r);
+   if(links.length){
+     const linkWrap=document.createElement('div');linkWrap.className='chapterLinks';
+     links.forEach(item=>{const a=document.createElement('a');a.className='chapterLink';a.href=item.url;a.target='_blank';a.rel='noopener';a.textContent='Louvri chapit '+item.chapter+' ↗';a.setAttribute('aria-label','Louvri '+r+', chapit '+item.chapter+' nan YouVersion');linkWrap.append(a)});
+     body.append(linkWrap);
+   }
+   card.append(num,body);$('readings').append(card);
+ });
+ let yes=!!done[key()];$('status').textContent=yes?'JOU FINI':'POKO FINI';
+ $('markBtn').textContent=yes?'✓ Jounen sa a fini — retire mak la':'✓ Make jounen sa a kòm fini';
+ $('markBtn').className='mark'+(yes?' done':'');
+ let n=Object.keys(done).filter(k=>done[k]).length,t=total(),p=Math.round(n/t*100);
+ $('doneCount').textContent=n;$('leftCount').textContent=Math.max(0,t-n);$('totalCount').textContent=t;
+ $('percent').textContent=p+'%';$('fill').style.width=p+'%';
+}
+function fillDays(){let n=data[months[+month.value][1]].length,old=day.value;day.innerHTML='';for(let i=1;i<=n;i++){let o=document.createElement('option');o.value=i;o.textContent='Jou '+i;day.append(o)}day.value=Math.min(+old||1,n);refresh()}
+month.addEventListener('change',fillDays);day.addEventListener('change',refresh);
+$('markBtn').addEventListener('click',()=>{done[key()]?delete done[key()]:done[key()]=true;localStorage.setItem('bibleReadingDone',JSON.stringify(done));refresh()});
+$('resetBtn').addEventListener('click',()=>{if(confirm('Èske ou sèten ou vle efase tout pwogrè ou?')){done={};localStorage.removeItem('bibleReadingDone');refresh()}});
+month.value=String(new Date().getMonth());fillDays();
+let promptEvent;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;$('installBox').style.display='block'});
+$('installBtn').addEventListener('click',async()=>{if(!promptEvent){alert('Pou enstale li, sèvi ak yon adrès HTTPS, epi nan meni Chrome ⋮ chwazi “Enstale aplikasyon an” oswa “Add to Home screen”.');return}promptEvent.prompt();await promptEvent.userChoice;promptEvent=null;$('installBox').style.display='none'});
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=10', {scope:'./'}).catch(()=>{}));
+
+// Liv Bib la ak abrevyasyon ofisyèl ki soti nan aplikasyon Pwofesè Mwen.
+const bibleBooks = [
+ ['Jenèz','GEN'],['Egzòd','EXO'],['Levitik','LEV'],['Nonb','NUM'],['Detewonòm','DEU'],
+ ['Jozye','JOS'],['Jij','JDG'],['Rit','RUT'],['I Samyèl','1SA'],['II Samyèl','2SA'],
+ ['I Wa','1KI'],['II Wa','2KI'],['I Kwonik','1CH'],['II Kwonik','2CH'],['Esdras','EZR'],
+ ['Neyemi','NEH'],['Estè','EST'],['Jòb','JOB'],['Sòm','PSA'],['Pwovèb','PRO'],
+ ['Eklezyas','ECC'],['Kantik','SON'],['Ezayi','ISA'],['Jeremi','JER'],['Lamantasyon','LAM'],
+ ['Ezekyèl','EZE'],['Danyèl','DAN'],['Oze','HOS'],['Jowèl','JOE'],['Amòs','AMO'],
+ ['Abdyas','OBA'],['Jonas','JON'],['Miche','MIC'],['Nawoum','NAH'],['Abakik','HAB'],
+ ['Sofoni','ZEP'],['Aje','HAG'],['Zakari','ZEC'],['Malachi','MAL'],
+ ['Matye','MAT'],['Mak','MAR'],['Lik','LUK'],['Jan','JOH'],['Travay','ACT'],
+ ['Women','ROM'],['I Korentyen','1CO'],['II Korentyen','2CO'],['Galat','GAL'],
+ ['Efezyen','EPH'],['Filipyen','PHP'],['Kolosyen','COL'],['I Tesalonisyen','1TH'],
+ ['II Tesalonisyen','2TH'],['I Timote','1TI'],['II Timote','2TI'],['Tit','TIT'],
+ ['Filemon','PHM'],['Ebre','HEB'],['Jak','JAM'],['I Pyè','1PE'],['II Pyè','2PE'],
+ ['I Jan','1JO'],['II Jan','2JO'],['III Jan','3JO'],['Jid','JUD'],['Revelasyon','REV']
+];
+const oldBooks=bibleBooks.slice(0,39),newBooks=bibleBooks.slice(39);
+const escHtml=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function renderBookList(id,items,withCode=false){document.getElementById(id).innerHTML=items.map(([name,code])=>`<div class="bookRow"><span>${escHtml(name)}</span>${withCode?`<code>${escHtml(code)}</code>`:''}</div>`).join('')}
+renderBookList('oldBooks',oldBooks);renderBookList('newBooks',newBooks);renderBookList('projectorOldBooks',oldBooks,true);renderBookList('projectorNewBooks',newBooks,true);
+document.querySelectorAll('.accordion').forEach(btn=>btn.addEventListener('click',()=>{const box=document.getElementById(btn.dataset.open),open=box.classList.toggle('hidden')===false;btn.setAttribute('aria-expanded',String(open));btn.querySelector('span').textContent=open?'Kache　−':'Montre　＋'}));
+// Egzèsis espesyal: 66 liv Bib la, nan lòd tradisyonèl 39 + 27.
+const bibleExerciseBooks = [
+'Jenèz','Egzòd','Levitik','Nonb','Detewonòm','Jozye','Jij','Rit','1 Samyèl','2 Samyèl','1 Wa','2 Wa','1 Kwonik','2 Kwonik','Esdras','Neyemi','Estè','Jòb','Sòm','Pwovèb','Eklezyas','Kantik','Ezayi','Jeremi','Lamantasyon','Ezekyèl','Danyèl','Oze','Jowèl','Amòs','Abdyas','Jonas','Miche','Nawoum','Abakik','Sofoni','Aje','Zakari','Malachi',
+'Matye','Mak','Lik','Jan','Travay','Women','1 Korentyen','2 Korentyen','Galat','Efezyen','Filipyen','Kolosyen','1 Tesalonisyen','2 Tesalonisyen','1 Timote','2 Timote','Tit','Filemon','Ebre','Jak','1 Pyè','2 Pyè','1 Jan','2 Jan','3 Jan','Jid','Revelasyon'
+];
+let bible66Index=0,bible66Score=0,bible66Order=[];
+const esc=s=>escHtml(s);
+const normBible=s=>String(s||'').toLocaleLowerCase('ht').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+function bibleExpected(i,side){return side==='before'?(i===0?'Pa genyen':bibleExerciseBooks[i-1]):(i===65?'Pa genyen':bibleExerciseBooks[i+1]);}
+function renderBible66(){
+ const i=bible66Order[bible66Index],book=bibleExerciseBooks[i],area=$('bible66Area');
+ area.innerHTML=`<div class="row"><span class="tag">Kesyon ${bible66Index+1} sou 66</span><span class="tag">Liv la chwazi o aza</span></div><div class="progress"><span style="width:${i/66*100}%"></span></div><h2 style="margin-top:16px">Ki liv ki vini anvan ak apre <b>${esc(book)}</b>?</h2><label for="bibleBefore">Liv ki vini anvan ${esc(book)}</label><input id="bibleBefore" autocomplete="off" placeholder="Ekri non liv la oswa Pa genyen"><label for="bibleAfter">Liv ki vini apre ${esc(book)}</label><input id="bibleAfter" autocomplete="off" placeholder="Ekri non liv la oswa Pa genyen"><div id="bible66Feedback"></div><div class="row" style="margin-top:14px"><button id="checkBible66">Verifye repons</button><button id="nextBible66" class="secondary hidden">Pwochen kesyon</button></div>`;
+ $('checkBible66').onclick=()=>{
+  const before=$('bibleBefore').value.trim(),after=$('bibleAfter').value.trim();
+  if(!before||!after)return alert('Tanpri ranpli toude espas repons yo.');
+  const okBefore=normBible(before)===normBible(bibleExpected(i,'before'));
+  const okAfter=normBible(after)===normBible(bibleExpected(i,'after'));
+  const correct=okBefore&&okAfter;if(correct)bible66Score++;
+  $('bible66Feedback').innerHTML=`<div class="feedback"><b>${correct?'Bon repons! Ou jwenn 1 pwen.':'Repons lan pa konplètman kòrèk. Ou pa jwenn pwen pou kesyon sa a.'}</b><p><b>Liv anvan:</b> ${esc(bibleExpected(i,'before'))} ${okBefore?'✓':'✗'}</p><p><b>Liv apre:</b> ${esc(bibleExpected(i,'after'))} ${okAfter?'✓':'✗'}</p></div>`;
+  $('checkBible66').disabled=true;$('nextBible66').classList.remove('hidden');
+ };
+ $('nextBible66').onclick=()=>{bible66Index++;if(bible66Index<66)renderBible66();else finishBible66();};
+}
+function finishBible66(){
+ const pct=Math.round(bible66Score/66*100),history=JSON.parse(localStorage.getItem('pm_bible66_results')||'[]');
+ const result={score:bible66Score,total:66,percent:pct,date:new Date().toLocaleString('ht-HT')};history.push(result);localStorage.setItem('pm_bible66_results',JSON.stringify(history));
+ $('bible66Area').innerHTML=`<h2>Egzèsis la fini!</h2><p>Rezilta ou: <b>${bible66Score} sou 66</b></p><div class="progress"><span style="width:${pct}%"></span></div><p><b>${pct}%</b> repons kòrèk.</p><button id="retryBible66">Refè egzèsis la</button>`;
+ $('retryBible66').onclick=startBible66;showBible66Results();
+}
+function startBible66(){bible66Index=0;bible66Score=0;bible66Order=Array.from({length:66},(_,i)=>i);for(let i=bible66Order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bible66Order[i],bible66Order[j]]=[bible66Order[j],bible66Order[i]];} $('bible66Area').classList.remove('hidden');renderBible66();}
+function showBible66Results(){const h=JSON.parse(localStorage.getItem('pm_bible66_results')||'[]');$('bible66Results').innerHTML=h.length?h.slice().reverse().slice(0,5).map(r=>`<div class="lesson"><b>${r.score}/${r.total} pwen (${r.percent}%)</b><p>${esc(r.date)}</p></div>`).join(''):'Ou poko fè egzèsis 66 liv Bib la.';}
+$('startBible66').onclick=startBible66;
+showBible66Results();
+
+
+// Egzèsis abrevyasyon yo: konsève lis abrevyasyon Vèsyon 9 la.
+const bibleAbbreviations = [
+ ['Jenèz','GEN'],['Egzòd','EXO'],['Levitik','LEV'],['Nonb','NUM'],['Detewonòm','DEU'],
+ ['Jozye','JOS'],['Jij','JDG'],['Rit','RUT'],['I Samyèl','1SA'],['II Samyèl','2SA'],
+ ['I Wa','1KI'],['II Wa','2KI'],['I Kwonik','1CH'],['II Kwonik','2CH'],['Esdras','EZR'],
+ ['Neyemi','NEH'],['Estè','EST'],['Jòb','JOB'],['Sòm','PSA'],['Pwovèb','PRO'],
+ ['Eklezyas','ECC'],['Kantik','SON'],['Ezayi','ISA'],['Jeremi','JER'],['Lamantasyon','LAM'],
+ ['Ezekyèl','EZE'],['Danyèl','DAN'],['Oze','HOS'],['Jowèl','JOE'],['Amòs','AMO'],
+ ['Abdyas','OBA'],['Jonas','JON'],['Miche','MIC'],['Nawoum','NAH'],['Abakik','HAB'],
+ ['Sofoni','ZEP'],['Aje','HAG'],['Zakari','ZEC'],['Malachi','MAL'],
+ ['Matye','MAT'],['Mak','MAR'],['Lik','LUK'],['Jan','JOH'],['Travay','ACT'],
+ ['Women','ROM'],['I Korentyen','1CO'],['II Korentyen','2CO'],['Galat','GAL'],
+ ['Efezyen','EPH'],['Filipyen','PHP'],['Kolosyen','COL'],['I Tesalonisyen','1TH'],
+ ['II Tesalonisyen','2TH'],['I Timote','1TI'],['II Timote','2TI'],['Tit','TIT'],
+ ['Filemon','PHM'],['Ebre','HEB'],['Jak','JAM'],['I Pyè','1PE'],['II Pyè','2PE'],
+ ['I Jan','1JO'],['II Jan','2JO'],['III Jan','3JO'],['Jid','JUD'],['Revelasyon','REV']
+];
+const abbrevLabel = code => code.replace(/[A-Z]+/g, part => part[0]+part.slice(1).toLowerCase());
+let abbrev66Index=0,abbrev66Score=0,abbrev66Order=[];
+function renderAbbrev66(){
+ const question=abbrev66Order[abbrev66Index],item=bibleAbbreviations[question.bookIndex],area=$('abbrev66Area');
+ const prompt=question.direction==='bookToCode'
+  ? `Pou jwenn <b>${esc(item[0])}</b>, ki abrevyasyon ou dwe ekri?`
+  : `Abrevyasyon <b>${esc(abbrevLabel(item[1]))}</b> se pou jwenn ki liv?`;
+ const label=question.direction==='bookToCode'?'Ekri abrevyasyon liv la':'Ekri non liv la';
+ const placeholder=question.direction==='bookToCode'?'Egzanp: Gen':'Egzanp: Jenèz';
+ area.innerHTML=`<div class="row"><span class="tag">Kesyon ${abbrev66Index+1} sou ${abbrev66Order.length}</span><span class="tag">Kesyon melanje o aza</span></div><div class="progress"><span style="width:${(abbrev66Index+1)/abbrev66Order.length*100}%"></span></div><h2 style="margin-top:16px">${prompt}</h2><label for="abbrevAnswer">${label}</label><input id="abbrevAnswer" autocomplete="off" autocapitalize="sentences" placeholder="${placeholder}"><div id="abbrevFeedback"></div><div class="row" style="margin-top:14px"><button id="checkAbbrev66">Verifye repons</button><button id="nextAbbrev66" class="secondary hidden">Pwochen kesyon</button></div>`;
+ $('checkAbbrev66').onclick=()=>{
+  const raw=$('abbrevAnswer').value.trim();
+  const normalize=value=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(!raw)return alert('Tanpri ekri repons lan.');
+  const expected=question.direction==='bookToCode'?item[1]:item[0];
+  const correct=normalize(raw)===normalize(expected);if(correct)abbrev66Score++;
+  const displayExpected=question.direction==='bookToCode'?abbrevLabel(item[1]):item[0];
+  $('abbrevFeedback').innerHTML=`<div class="feedback"><b>${correct?'Bon repons! Ou jwenn 1 pwen.':'Repons lan pa kòrèk. Ou pa jwenn pwen pou kesyon sa a.'}</b><p><b>Bon repons lan:</b> ${esc(displayExpected)}</p></div>`;
+  $('checkAbbrev66').disabled=true;$('nextAbbrev66').classList.remove('hidden');
+ };
+ $('nextAbbrev66').onclick=()=>{abbrev66Index++;if(abbrev66Index<abbrev66Order.length)renderAbbrev66();else finishAbbrev66();};
+}
+function finishAbbrev66(){
+ const total=abbrev66Order.length,pct=Math.round(abbrev66Score/total*100),history=JSON.parse(localStorage.getItem('pm_abbrev66_results')||'[]');
+ const result={score:abbrev66Score,total,percent:pct,date:new Date().toLocaleString('ht-HT')};history.push(result);localStorage.setItem('pm_abbrev66_results',JSON.stringify(history));
+ $('abbrev66Area').innerHTML=`<h2>Egzèsis la fini!</h2><p>Rezilta ou: <b>${abbrev66Score} sou ${total}</b></p><div class="progress"><span style="width:${pct}%"></span></div><p><b>${pct}%</b> repons kòrèk.</p><button id="retryAbbrev66">Refè egzèsis la</button>`;
+ $('retryAbbrev66').onclick=startAbbrev66;showAbbrev66Results();
+}
+function startAbbrev66(){
+ abbrev66Index=0;abbrev66Score=0;
+ abbrev66Order=bibleAbbreviations.flatMap((item,bookIndex)=>[
+  {bookIndex,direction:'bookToCode'},{bookIndex,direction:'codeToBook'}
+ ]);
+ for(let i=abbrev66Order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[abbrev66Order[i],abbrev66Order[j]]=[abbrev66Order[j],abbrev66Order[i]];}
+ $('abbrev66Area').classList.remove('hidden');renderAbbrev66();
+}
+function showAbbrev66Results(){
+ const h=JSON.parse(localStorage.getItem('pm_abbrev66_results')||'[]');
+ $('abbrev66Results').innerHTML=h.length?h.slice().reverse().slice(0,5).map(r=>`<div class="lesson"><b>${r.score}/${r.total||66} pwen (${r.percent}%)</b><p>${esc(r.date)}</p></div>`).join(''):'Ou poko fè egzèsis abrevyasyon yo.';
+}
+$('startAbbrev66').onclick=startAbbrev66;
+showAbbrev66Results();
+
+
+
+const cleaningSchedule = [
+ {date:'04 Novanm 2026',day:'Mèkredi',people:['ANALISE','JULIETTE','DENISE','MARQUESE']},
+ {date:'07 Novanm 2026',day:'Samdi',people:['JULIANI','SOLÈNE','MICHELINE','MONIK']},
+ {date:'11 Novanm 2026',day:'Mèkredi',people:['ELIANETTE','ADOU','MISENA','DIEUNISE']},
+ {date:'14 Novanm 2026',day:'Samdi',people:['ASEFI','NERLANDE','MONISE','LUISIA']},
+ {date:'18 Novanm 2026',day:'Mèkredi',people:['EMMANUELA','YVANE','KAMELI','ISOVANE']},
+ {date:'21 Novanm 2026',day:'Samdi',people:['FANETTE','ANGECAR','JUDELINE','RIT']},
+ {date:'25 Novanm 2026',day:'Mèkredi',people:['HUGUETTE','FRIZNA','GUERDA','MANETTE']},
+ {date:'28 Novanm 2026',day:'Samdi',people:['ANASIA','GUERLINE','ELISE','CHRISTIANIA']}
+].map((x,i)=>({...x,id:'clean-'+i,period:'',assignments:[{role:'Netwayaj',people:x.people}],role:'Netwayaj',source:'Pwogram Novanm 2026'}));
+const hostingSchedule = [
+ {date:'01 Novanm 2026',day:'Dimanch',period:'Maten',assignments:[{role:'Antre',people:['LEOSTÈN','ANACIA']},{role:'Asanble',people:['FRANK','MIMOZ']},{role:'Twalèt',people:['LENOIR','MIZNA']},{role:'Timoun',people:['ELIANETTE','ANA-LOUISE']}]},
+ {date:'01 Novanm 2026',day:'Dimanch',period:'Swa',assignments:[{role:'Antre',people:['LEOSTÈN','ANACIA']},{role:'Asanble',people:['FRANK','MIMOZ']},{role:'Twalèt',people:['LENOIR','MIZNA']},{role:'Timoun',people:['ELIANETTE','ANA-LOUISE']}]},
+ {date:'04 Novanm 2026',day:'Mèkredi',period:'',assignments:[{role:'Antre',people:['WILSON','ELIANETTE']}]},
+ {date:'07 Novanm 2026',day:'Samdi',period:'',assignments:[{role:'Antre',people:['TEOFIL','SILVIA']}]},
+ {date:'08 Novanm 2026',day:'Dimanch',period:'Maten',assignments:[{role:'Antre',people:['FRANK','YVONI']},{role:'Asanble',people:['WILSON','ANACIA']},{role:'Twalèt',people:['LEOSTÈN','MIMOZ']},{role:'Timoun',people:['ANA-LOUISE','ELIANETTE']}]},
+ {date:'08 Novanm 2026',day:'Dimanch',period:'Swa',assignments:[{role:'Antre',people:['FRANK','YVONI']},{role:'Asanble',people:['WILSON','ANACIA']},{role:'Twalèt',people:['LEOSTÈN','MIMOZ']},{role:'Timoun',people:['ANA-LOUISE','ELIANETTE']}]},
+ {date:'11 Novanm 2026',day:'Mèkredi',period:'',assignments:[{role:'Antre',people:['LEOSTÈN','MARQUEZ']}]},
+ {date:'14 Novanm 2026',day:'Samdi',period:'',assignments:[{role:'Antre',people:['TEOFIL','JILIANI']}]},
+ {date:'15 Novanm 2026',day:'Dimanch',period:'Maten',assignments:[{role:'Antre',people:['WILSON','SILVIA']},{role:'Asanble',people:['LENOIR','MIZNA']},{role:'Twalèt',people:['FRANK','ANA-LOUISE']},{role:'Timoun',people:['ELIANETTE','YVONI']}]},
+ {date:'15 Novanm 2026',day:'Dimanch',period:'Swa',assignments:[{role:'Antre',people:['WILSON','SILVIA']},{role:'Asanble',people:['LENOIR','MIZNA']},{role:'Twalèt',people:['FRANK','ANA-LOUISE']},{role:'Timoun',people:['ELIANETTE','YVONI']}]},
+ {date:'18 Novanm 2026',day:'Mèkredi',period:'',assignments:[{role:'Antre',people:['LEOSTÈN','YVONI']}]},
+ {date:'21 Novanm 2026',day:'Samdi',period:'',assignments:[{role:'Antre',people:['TEOFIL','ELIANETTE']}]},
+ {date:'22 Novanm 2026',day:'Dimanch',period:'Maten',assignments:[{role:'Antre',people:['LENOIR','MIMOZ']},{role:'Asanble',people:['WILSON','YVONI']},{role:'Twalèt',people:['FRANK','SILVIA']},{role:'Timoun',people:['ANACIA','MIZNA']}]},
+ {date:'22 Novanm 2026',day:'Dimanch',period:'Swa',assignments:[{role:'Antre',people:['LENOIR','MIMOZ']},{role:'Asanble',people:['WILSON','YVONI']},{role:'Twalèt',people:['FRANK','SILVIA']},{role:'Timoun',people:['ANACIA','MIZNA']}]},
+ {date:'25 Novanm 2026',day:'Mèkredi',period:'',assignments:[{role:'Antre',people:['FRANK','MARQUEZ']}]},
+ {date:'28 Novanm 2026',day:'Samdi',period:'',assignments:[{role:'Antre',people:['LEOSTÈN','SILVIA']}]},
+ {date:'29 Novanm 2026',day:'Dimanch',period:'Maten',assignments:[{role:'Antre',people:['WILSON','ANACIA']},{role:'Asanble',people:['FRANK','MIZNA']},{role:'Twalèt',people:['LEOSTÈN','ELIANETTE']},{role:'Timoun',people:['YVONI','ANA-LOUISE']}]},
+ {date:'29 Novanm 2026',day:'Dimanch',period:'Swa',assignments:[{role:'Antre',people:['WILSON','ANACIA']},{role:'Asanble',people:['FRANK','MIZNA']},{role:'Twalèt',people:['LEOSTÈN','ELIANETTE']},{role:'Timoun',people:['YVONI','ANA-LOUISE']}]}
+].map((x,i)=>({...x,id:'host-'+i,people:[...new Set(x.assignments.flatMap(a=>a.people))],role:x.assignments.map(a=>a.role).join(', '),source:'Pwogram Novanm 2026'}));
+const projectorSchedule = [
+ {date:'01 Novanm 2026',day:'Dimanch',period:'Maten',people:['Djounaylie','Esaylie']},
+ {date:'01 Novanm 2026',day:'Dimanch',period:'Swa',people:['Roseline','Djounaylie']},
+ {date:'02 Novanm 2026',day:'Lendi',period:'Swa',people:['Emmanuela','Esaylie']},
+ {date:'04 Novanm 2026',day:'Mèkredi',period:'Swa',people:['Djounaylie','Emmanuela']},
+ {date:'06 Novanm 2026',day:'Vandredi',period:'—',people:['Djounaylie','Roseline']},
+ {date:'07 Novanm 2026',day:'Samdi',period:'Maten',people:['Spelançia','Djounaylie']},
+ {date:'07 Novanm 2026',day:'Samdi',period:'Swa',people:['Djounaylie','Esaylie']},
+ {date:'08 Novanm 2026',day:'Dimanch',period:'Maten',people:['Roseline','Djounaylie']},
+ {date:'08 Novanm 2026',day:'Dimanch',period:'Swa',people:['Emmanuela','Esaylie']},
+ {date:'09 Novanm 2026',day:'Lendi',period:'Swa',people:['Djounaylie','Emmanuela']},
+ {date:'11 Novanm 2026',day:'Mèkredi',period:'Swa',people:['Djounaylie','Roseline']},
+ {date:'13 Novanm 2026',day:'Vandredi',period:'—',people:['Spelançia','Djounaylie']},
+ {date:'14 Novanm 2026',day:'Samdi',period:'Maten',people:['Djounaylie','Esaylie']},
+ {date:'14 Novanm 2026',day:'Samdi',period:'Swa',people:['Roseline','Djounaylie']},
+ {date:'15 Novanm 2026',day:'Dimanch',period:'Maten',people:['Emmanuela','Esaylie']},
+ {date:'15 Novanm 2026',day:'Dimanch',period:'Swa',people:['Djounaylie','Emmanuela']},
+ {date:'16 Novanm 2026',day:'Lendi',period:'Swa',people:['Djounaylie','Roseline']},
+ {date:'18 Novanm 2026',day:'Mèkredi',period:'Swa',people:['Spelançia','Djounaylie']},
+ {date:'20 Novanm 2026',day:'Vandredi',period:'—',people:['Djounaylie','Esaylie']},
+ {date:'21 Novanm 2026',day:'Samdi',period:'Maten',people:['Roseline','Djounaylie']},
+ {date:'21 Novanm 2026',day:'Samdi',period:'Swa',people:['Emmanuela','Esaylie']},
+ {date:'22 Novanm 2026',day:'Dimanch',period:'Maten',people:['Djounaylie','Emmanuela']},
+ {date:'22 Novanm 2026',day:'Dimanch',period:'Swa',people:['Djounaylie','Roseline']},
+ {date:'23 Novanm 2026',day:'Lendi',period:'Swa',people:['Spelançia','Djounaylie']},
+ {date:'25 Novanm 2026',day:'Mèkredi',period:'Swa',people:['Djounaylie','Esaylie']},
+ {date:'27 Novanm 2026',day:'Vandredi',period:'—',people:['Roseline','Djounaylie']},
+ {date:'28 Novanm 2026',day:'Samdi',period:'Maten',people:['Emmanuela','Esaylie']},
+ {date:'28 Novanm 2026',day:'Samdi',period:'Swa',people:['Djounaylie','Emmanuela']},
+ {date:'29 Novanm 2026',day:'Dimanch',period:'Maten',people:['Djounaylie','Roseline']},
+ {date:'29 Novanm 2026',day:'Dimanch',period:'Swa',people:['Spelançia','Djounaylie']},
+ {date:'30 Novanm 2026',day:'Lendi',period:'Swa',people:['Djounaylie','Esaylie']}
+];
+function normSchedule(v){return String(v||'').toLocaleLowerCase('ht').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
+function termsSchedule(v){return String(v||'').toLocaleLowerCase('ht').normalize('NFD').replace(/[\u0300-\u036f]/g,'').match(/[a-z0-9]+/g)||[]}
+function matchesSchedule(fields,terms){const hay=normSchedule(fields.join(' '));return terms.every(t=>hay.includes(t))}
+function renderSimpleSchedule(type){const isClean=type==='cleaning',items=isClean?cleaningSchedule:hostingSchedule,query=termsSchedule(document.getElementById(type+'Search').value);const found=items.filter(x=>matchesSchedule([x.date,x.day,x.period||'',...(x.people||[]),...(x.assignments||[]).flatMap(a=>[a.role,...a.people])],query));document.getElementById(type+'Count').textContent=`${found.length} sèvis jwenn sou ${items.length} sèvis nan Novanm 2026.`;document.getElementById(type+'Results').innerHTML=found.length?found.map(x=>`<div class="schedule-card"><div class="schedule-meta"><span class="schedule-chip">${escHtml(x.date)}</span><span class="schedule-chip">${escHtml(x.day)}</span>${x.period?`<span class="schedule-chip">${escHtml(x.period)}</span>`:''}</div>${(x.assignments||[]).map(a=>`<div class="schedule-role"><b>${escHtml(a.role)}:</b> ${escHtml(a.people.join(' • '))}</div>`).join('')}</div>`).join(''):'<p class="small">Pa gen sèvis ki koresponn ak rechèch sa a.</p>'}
+function renderProjector(){const query=termsSchedule(document.getElementById('projectorSearch').value),found=projectorSchedule.filter(x=>matchesSchedule([x.date,x.day,x.period,...x.people,'Sèvis Pwojektè'],query));document.getElementById('projectorCount').textContent=`${found.length} sèvis jwenn sou ${projectorSchedule.length} sèvis nan Novanm 2026.`;document.getElementById('projectorResults').innerHTML=found.map(x=>`<div class="schedule-card"><div class="schedule-meta"><span class="schedule-chip">${escHtml(x.date)}</span><span class="schedule-chip">${escHtml(x.day)}</span><span class="schedule-chip">${x.period==='—'?'Sèvis pa presize':escHtml(x.period)}</span></div><b>Responsab pwojektè:</b> ${escHtml(x.people.join(' • '))}</div>`).join('')||'<p class="small">Pa gen sèvis ki koresponn ak rechèch sa a.</p>'}
+['cleaning','hosting'].forEach(type=>document.getElementById(type+'Search').addEventListener('input',()=>renderSimpleSchedule(type)));document.getElementById('projectorSearch').addEventListener('input',renderProjector);renderSimpleSchedule('cleaning');renderSimpleSchedule('hosting');renderProjector();
+// Seksyon Lekòl: Nivo 09 sèvi ak enfòmasyon ki sou premye paj dokiman orè a.
+const schoolLevelButtons=[...document.querySelectorAll('.levelBtn')];
+function renderSchoolLevel(level){
+ schoolLevelButtons.forEach(btn=>{const active=Number(btn.dataset.level)===level;btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));});
+ const area=document.getElementById('schoolContent');
+ if(level!==9){area.innerHTML=`<div class="schoolHero"><div class="eyebrow">LEGLIZ NOUVO TESTAMAN • PWOGRAM DEVOSYON TIMOUN</div><h2>Nivo ${String(level).padStart(2,'0')}</h2><p>Espas pou kontni nivo sa a.</p></div><div class="schoolBody"><div class="empty">${level===10?'Espas Granmoun yo pare pou resevwa pwogram pa li.':`Kontni pou Nivo ${String(level).padStart(2,'0')} poko ajoute. Nivo 09 la deja gen pwogram ki soti nan premye paj dokiman an.`}</div></div>`;return;}
+ area.innerHTML=`<div class="schoolHero"><div class="eyebrow">LEGLIZ NOUVO TESTAMAN</div><h2>Pwogram Devosyon Timoun</h2><p>NIVO 9 &nbsp;|&nbsp; DIMANCH MATEN &nbsp;|&nbsp; NOVANM 2026</p></div><div class="schoolBody">
+ <div class="schoolGroup"><h3>1. DISTRIBISYON TWA GWOUP YO</h3>
+ <div class="schoolLine"><b>GWOUP 1</b><br>Monitè: Louisly Jean + Dieunayrose<br>Netwayaj: Rosedarline + Estivenson<br>Chèche timoun: Ancelot + Laguerre roicarlie</div>
+ <div class="schoolLine"><b>GWOUP 2</b><br>Monitè: Gueuveca + Tamalie<br>Netwayaj: Dieucilove + Millianette<br>Chèche timoun: Estivenson + Loubens Saint Duc</div>
+ <div class="schoolLine"><b>GWOUP 3</b><br>Monitè: Rose Darline + Estivenson<br>Netwayaj: Maykervelie + Enaïlove<br>Chèche timoun: Misline + Dieunayrose</div></div>
+ <div class="schoolGroup"><h3>2. WOTASYON POU MWA NOVANM 2026</h3>
+ <div class="schoolLine"><b>01 Nov. • Dimanch • Gwoup 1</b><br>Monitè yo: Louisly Jean + Dieunayrose</div>
+ <div class="schoolLine"><b>08 Nov. • Dimanch • Gwoup 2</b><br>Monitè yo: Gueuveca + Tamalie</div>
+ <div class="schoolLine"><b>15 Nov. • Dimanch • Gwoup 3</b><br>Monitè yo: Rose Darline + Estivenson</div>
+ <div class="schoolLine"><b>22 Nov. • Dimanch • Gwoup 1</b><br>Monitè yo: Louisly Jean + Dieunayrose</div>
+ <div class="schoolLine"><b>29 Nov. • Dimanch • Gwoup 2</b><br>Monitè yo: Gueuveca + Tamalie</div></div>
+ <div class="schoolGroup"><h3>NÒT</h3><p class="schoolLine">Wotasyon an montre gwoup ki gen sèvis chak dimanch. Responsablite chak gwoup se sa ki ekri nan distribisyon gwoup yo anlè a.</p></div>
+ <div class="schoolNote"><b>SÈVI AK LANMOU • DISIPLIN • RESPÈ</b></div></div>`;
+}
+schoolLevelButtons.forEach(btn=>btn.addEventListener('click',()=>renderSchoolLevel(Number(btn.dataset.level))));
+renderSchoolLevel(9);
+
+// Navigasyon anba a chanje paj san li pa manyen pwogram lekti a oswa pwogrè li.
+const sectionPopup=document.getElementById('sectionPopup'),moreNavBtn=document.getElementById('moreNavBtn');
+function closeSectionPopup(){sectionPopup.classList.add('hidden');moreNavBtn.setAttribute('aria-expanded','false')}
+function showPage(page){document.getElementById('gidHome').classList.toggle('hidden',page!=='home');document.querySelectorAll('main > .bottomPage').forEach(el=>el.classList.toggle('hidden',el.id!==page));document.querySelectorAll('.navItem').forEach(x=>x.classList.toggle('active',x.dataset.page===page));window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('.navItem[data-page]').forEach(btn=>btn.addEventListener('click',()=>{closeSectionPopup();showPage(btn.dataset.page)}));
+moreNavBtn.addEventListener('click',()=>{const opening=sectionPopup.classList.contains('hidden');sectionPopup.classList.toggle('hidden',!opening);moreNavBtn.setAttribute('aria-expanded',String(opening));});
+document.getElementById('openPodcastBtn').addEventListener('click',()=>{showPage('morePage');document.querySelectorAll('.moreSubPage').forEach(el=>el.classList.toggle('hidden',el.id!=='podcastPage'));document.querySelector('.headerMenu').open=false;window.scrollTo({top:0,behavior:'smooth'});});
+document.querySelectorAll('.popupItem').forEach(btn=>btn.addEventListener('click',()=>{const target=btn.dataset.openSection;showPage('morePage');document.querySelectorAll('.moreSubPage').forEach(el=>el.classList.toggle('hidden',el.id!==target));closeSectionPopup();}));
+document.addEventListener('click',e=>{if(!sectionPopup.contains(e.target)&&!moreNavBtn.contains(e.target))closeSectionPopup()});
+
+
+const podcastTracks=[{"title":"66 Mo Redefini Lapriyè","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/66_Mo__Redefini_Lapriye.m4a"},{"title":"Adorasyon nan Fènwa","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/adorasyon-nan-fenwa.m4a"},{"title":"Analiz Dezyèm Vini an","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/analiz-dezyem-vini-an.m4a"},{"title":"Anatomi Amèti a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/anatomi-ameti-a.m4a"},{"title":"Anatomi Lògèy Revelasyon 9","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/anatomi-logey-revelasyon-9.m4a"},{"title":"Anatomi Mòtalite a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/anatomi-motalite-a.m4a"},{"title":"Anatomi yon Chit","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/anatomi-yon-chit-espirityel.m4a"},{"title":"Anatomi yon Chit Espirityèl","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/anatomi-yon-chit.m4a"},{"title":"Anatomi yon Rezirèksyon","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/anatomi-yon-rezireksyon.m4a"},{"title":"Batay la Apre Benediksyon an","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/batay-la-apre-benediksyon-an.m4a"},{"title":"Bon Samariten an","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/bon-samariten-an.m4a"},{"title":"Chanjman Paradig la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/chanjman-paradig-la.m4a"},{"title":"Chemen Pafè Wa David la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/chemen-pafe-wa-david-la.m4a"},{"title":"Dànyèl Lespri Ki Pa Blese","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/danyel-lespri-ki-pa-blese.m4a"},{"title":"Debloke Plenitid Lajwa","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/debloke-plenitid-lajwa.m4a"},{"title":"Dekode Jenèz Mistè Lamarye a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/dekode-jenez-miste-lamarye-a.m4a"},{"title":"Dekode Ministè Ansyen an","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/dekode-ministe-ansyen-an.m4a"},{"title":"Dekode Priyè ki Efikas la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/dekode-pouvwa-san-an.m4a"},{"title":"Dekode Pouvwa San an","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/dekode-priye-ki-efikas-la.m4a"},{"title":"Dekonstriksyon yon Semon","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/dekonstriksyon-yon-semon.m4a"},{"title":"Desizyon Rit la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/desizyon-rit-la.m4a"},{"title":"Ekosistèm Adorasyon an","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/ekosistem-adorasyon-an.m4a"},{"title":"Fè yon Sanktiyè pou Mwen","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/fe-yon-sanktiye-pou-mwen.m4a"},{"title":"Gade Ti Mouton an","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/gade-ti-mouton-an.m4a"},{"title":"Istwa Papa Pwodig La","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/istwa-papa-pwodig-la.m4a"},{"title":"Jwenn yon Patnè Lavi","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/jwenn-yon-patne-lavi.m4a"},{"title":"Kay Joab Chit Trajik yon Ewo","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/kay-joab-chit-trajik-yon-ewo.m4a"},{"title":"Kay Jowab Yon Etid sou Amètim","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/kay-jowab-yon-etid-sou-ametim.m4a"},{"title":"Kisa Ki Fè Yon Moun Gen Valè","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/kisa-ki-fe-yon-moun-gen-vale.m4a"},{"title":"Konstwi yon Vrè Tabènak","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/konstwi-yon-vre-tabenak.m4a"},{"title":"Koute Kache Rankin Yo","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/koute-kache-rankin-yo.m4a"},{"title":"Krich Dlo Abandone","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/krich-dlo-a-abandone.m4a"},{"title":"Krich Dlo a Abandone","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/krich-dlo-abandone.m4a"},{"title":"Lamarye Tèt Kale a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/lamarye-tet-kale-a.m4a"},{"title":"Leviyatan ADN Dyab la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/leviyatan-adn-dyab-la.m4a"},{"title":"Lik 15 Pèdi epi Jwenn","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/lik-15-pedi-epi-jwenn.m4a"},{"title":"Manyen Lafwa a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/manyen-lafwa-a.m4a"},{"title":"Mistè Vèj Kas La","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/miste-vej-kas-la.m4a"},{"title":"Nonm Fou Gadara a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/nonm-fou-gadara-a.m4a"},{"title":"Onksyon Sentespri a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/onksyon-sentespri-a.m4a"},{"title":"Papa Pwodig la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/papa-pwodig-la.m4a"},{"title":"Paradòks Apèl la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/paradoks-apel-la.m4a"},{"title":"Pèlen Swivè a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/pelen-swive-a.m4a"},{"title":"Plan Minis Biblik la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/plan-minis-biblik-la.m4a"},{"title":"Plan Tabènak la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/plan-tabenak-la.m4a"},{"title":"Plan Wout Adorasyon","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/plan-wout-adorasyon.m4a"},{"title":"Pouvwa Ki Genyen Nan San An","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/pouvwa-ki-genyen-nan-san-an.m4a"},{"title":"Pouvwa Louwanj Vwa Seyè a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/pouvwa-louwanj-vwa-seye-a.m4a"},{"title":"Pwisans espirityèl mizik la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/pwisans-espirityel-mizik-la.m4a"},{"title":"Pwomès la Mwen p ap kite ou","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/pwomes-la-mwen-p-ap-kite-ou.m4a"},{"title":"Pwoteje Jaden Espirityèl Ou","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/pwoteje-jaden-espirityel-ou.m4a"},{"title":"Revelasyon Granmèt la nan Glwa li","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/revelasyon-granmet-la-nan-glwa-li.m4a"},{"title":"Reziste Tantasyon","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/reziste-tantasyon.m4a"},{"title":"Sikoloji Dànyèl","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/sikoloji-danyel.m4a"},{"title":"Simonte Laperèz Lanmò","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/simonte-laperez-lanmo.m4a"},{"title":"Sòm 18 Chante Batay la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/som-18-chante-batay-la.m4a"},{"title":"Tabènak Santre Kris","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/tabenak-santre-kris.m4a"},{"title":"Tabènak la Plan Letènite","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/tabenak-la-plan-letenite.m4a"},{"title":"Teyoloji Gerizon Divin","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/teyoloji-gerizon-divin.m4a"},{"title":"Transfòmasyon Pyè","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/transfomasyon-pye.m4a"},{"title":"Twa Bagay Ou Dwe Konnen","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/twa-bagay-ou-dwe-konnen.m4a"},{"title":"Twa Bagay pou Konnen nan yon Batay","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/twa-bagay-pou-konnen-nan-yon-batay.m4a"},{"title":"Twa Dimansyon Redanpsyon an","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/twa-dimansyon-redanpsyon-an.m4a"},{"title":"Twa Gwoup nan Legliz la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/twa-gwoup-nan-legliz-la.m4a"},{"title":"Odyo san tit 01","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/vid-20260614-wa0006-1.m4a"},{"title":"Odyo san tit 02","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/vid-20260614-wa0007-1.m4a"},{"title":"Vrè Libète Finansyèl","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/vre-libete-finansyel.m4a"},{"title":"Vwayaj Eskatolojik la","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/vwayaj-eskatolojik-la.m4a"},{"title":"Yon Vwayaj Redanmsyon","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/yon-vwayaj-redanmsyon.m4a"},{"title":"Zam Bondye a","src":"https://github.com/charlesjosemiguel47-alt/lekti-bib-la/releases/download/v1.0.0/zam-bondye-a.m4a"}];
+const audio=document.getElementById('podcastAudio'), trackList=document.getElementById('trackList');
+const PODCAST_CACHE='kreyol-podcasts-audio-v1';
+let currentTrack=-1, activeObjectUrl=null;
+const $p=id=>document.getElementById(id);
+function fmtTime(sec){if(!Number.isFinite(sec))return '0:00';let m=Math.floor(sec/60),r=Math.floor(sec%60);return m+':'+String(r).padStart(2,'0')}
+async function getPodcastCache(){return caches.open(PODCAST_CACHE)}
+async function isTrackSaved(track){try{return !!(await (await getPodcastCache()).match(track.src))}catch(e){return false}}
+async function updateOfflineProgress(){
+ let saved=0; for(const t of podcastTracks) if(await isTrackSaved(t)) saved++;
+ const pct=Math.round(saved/podcastTracks.length*100);
+ $p('offlineProgressText').textContent=saved+' / '+podcastTracks.length+' telechaje';
+ $p('offlineProgressPercent').textContent=pct+'%';
+ $p('offlineProgressBar').style.width=pct+'%';
+ $p('downloadAllPodcasts').textContent=saved===podcastTracks.length?'✓ Tout odyo yo telechaje':'⬇ Telechaje tout '+(podcastTracks.length-saved)+' odyo ki rete';
+ return saved;
+}
+async function downloadPodcastTrack(i){
+ const t=podcastTracks[i], btn=trackList.querySelector('[data-download="'+i+'"]');
+ if(btn){btn.disabled=true;btn.textContent='…'}
+ try{
+  const cache=await getPodcastCache();
+  if(await cache.match(t.src)){if(btn){btn.textContent='✓ Telechaje';btn.classList.add('saved')}return true}
+  const response=await fetch(t.src,{mode:'cors',cache:'no-cache'});
+  if(!response.ok) throw new Error('HTTP '+response.status);
+  await cache.put(t.src,response.clone());
+  if(btn){btn.textContent='✓ Telechaje';btn.classList.add('saved')}
+  return true;
+ }catch(err){
+  if(btn){btn.disabled=false;btn.textContent='⬇ Telechaje'}
+  const detail=(err && (err.name||err.message)) ? ((err.name||'Erè') + (err.message ? ': '+err.message : '')) : String(err||'Erè enkoni');
+  $p('offlineStatus').textContent='Telechajman echwe pou « '+t.title+' ». Detay teknik: '+detail+'.';
+  console.error('Offline download failed:',t.title,err);return false;
+ }finally{updateOfflineProgress()}
+}
+function renderTrackList(){
+ trackList.innerHTML='';
+ podcastTracks.forEach((t,i)=>{
+  const row=document.createElement('div');row.className='trackItem'+(i===currentTrack?' active':'');
+  const play=document.createElement('button');play.type='button';play.className='trackItem';play.style.cssText='border:0;padding:0;background:transparent;flex:1;min-width:0';
+  play.innerHTML=`<span class="trackNum">${String(i+1).padStart(2,'0')}</span><span><strong></strong><small>Odyo • Kreyòl</small></span>`;
+  play.querySelector('strong').textContent=t.title;play.addEventListener('click',()=>loadTrack(i,true));
+  const dl=document.createElement('button');dl.type='button';dl.className='offlineTrackBtn';dl.dataset.download=i;dl.textContent='⬇ Telechaje';dl.addEventListener('click',()=>downloadPodcastTrack(i));
+  row.append(play,dl);trackList.append(row);
+ });
+ $p('playlistCount').textContent=podcastTracks.length+' odyo';
+ podcastTracks.forEach(async(t,i)=>{if(await isTrackSaved(t)){const b=trackList.querySelector('[data-download="'+i+'"]');if(b){b.textContent='✓ Telechaje';b.classList.add('saved')}}});
+}
+async function loadTrack(i,autoplay=false){
+ if(!podcastTracks.length)return;
+ currentTrack=(i+podcastTracks.length)%podcastTracks.length;
+ const track=podcastTracks[currentTrack], source=$p('podcastAudioSource');
+ try{
+  const cached=await (await getPodcastCache()).match(track.src);
+  if(activeObjectUrl){URL.revokeObjectURL(activeObjectUrl);activeObjectUrl=null}
+  if(cached){activeObjectUrl=URL.createObjectURL(await cached.blob());source.src=activeObjectUrl;$p('audioStatus').textContent='Odyo telechaje — li disponib san entènèt.'}
+  else{source.src=track.src;$p('audioStatus').textContent='Odyo a poko telechaje. Konekte sou entènèt pou koute li.'}
+  audio.load();$p('currentTrackTitle').textContent=track.title;$p('trackCounter').textContent=(currentTrack+1)+' / '+podcastTracks.length;renderTrackList();
+  if(autoplay)audio.play().then(()=>$p('audioStatus').textContent=cached?'Ap jwe odyo ki sou telefòn nan.':'Ap jwe kounye a.').catch(err=>{$p('audioStatus').textContent='Odyo a pa kapab kòmanse. Si li pa telechaje, verifye koneksyon an.';console.error('Podcast playback error:',err)});
+ }catch(err){$p('audioStatus').textContent='Gen yon pwoblèm pou ouvri odyo a.';console.error(err)}
+}
+async function downloadAllPodcasts(){
+ const btn=$p('downloadAllPodcasts');btn.disabled=true;
+ let done=await updateOfflineProgress();
+ for(let i=0;i<podcastTracks.length;i++){
+  if(await isTrackSaved(podcastTracks[i]))continue;
+  $p('offlineStatus').textContent='Telechajman '+(i+1)+' / '+podcastTracks.length+' : '+podcastTracks[i].title;
+  const ok=await downloadPodcastTrack(i);if(ok)done++;
+  else { $p('offlineStatus').textContent='Telechajman kanpe. Ou ka eseye ankò pita; sa ki deja telechaje yo rete la.';break; }
+ }
+ done=await updateOfflineProgress();
+ if(done===podcastTracks.length)$p('offlineStatus').textContent='Tout 70 odyo yo telechaje. Ou kapab koute yo san entènèt.';
+ btn.disabled=false;
+}
+$p('downloadAllPodcasts').addEventListener('click',downloadAllPodcasts);
+$p('playTrack').addEventListener('click',()=>{if(currentTrack<0)loadTrack(0,true);else if(audio.paused)audio.play().catch(()=>{});else audio.pause()});
+$p('nextTrack').addEventListener('click',nextTrack);$p('prevTrack').addEventListener('click',previousTrack);
+function nextTrack(){if($p('shuffleMode').value==='on'&&podcastTracks.length>1){let n;do{n=Math.floor(Math.random()*podcastTracks.length)}while(n===currentTrack);loadTrack(n,true)}else if(currentTrack<podcastTracks.length-1)loadTrack(currentTrack+1,true);else if($p('playMode').value==='all')loadTrack(0,true);else if($p('playMode').value==='one'){audio.currentTime=0;audio.play()}else{$p('playTrack').textContent='▶'}}
+function previousTrack(){if(audio.currentTime>3)audio.currentTime=0;else loadTrack(currentTrack<=0?podcastTracks.length-1:currentTrack-1,true)}
+$p('backTrack').addEventListener('click',()=>audio.currentTime=Math.max(0,audio.currentTime-15));$p('forwardTrack').addEventListener('click',()=>audio.currentTime=Math.min(audio.duration||0,audio.currentTime+15));
+audio.addEventListener('play',()=>{$p('playTrack').textContent='Ⅱ';$p('audioStatus').textContent='Ap jwe kounye a.'});audio.addEventListener('pause',()=>{$p('playTrack').textContent='▶';if(currentTrack>=0&&!audio.ended)$p('audioStatus').textContent='Lekti a kanpe.'});audio.addEventListener('canplay',()=>$p('audioStatus').textContent='Odyo a pare.');audio.addEventListener('error',()=>{$p('audioStatus').textContent='Erè nan chajman odyo a. Eseye telechaje odyo sa a ankò.';console.error('Audio element error:',audio.error)});
+audio.addEventListener('ended',()=>{if($p('playMode').value==='one'){audio.currentTime=0;audio.play()}else if($p('playMode').value==='stop'){$p('playTrack').textContent='▶'}else nextTrack()});
+audio.addEventListener('timeupdate',()=>{$p('currentTime').textContent=fmtTime(audio.currentTime);$p('duration').textContent=fmtTime(audio.duration);if(Number.isFinite(audio.duration)&&audio.duration>0)$p('seekBar').value=Math.round(audio.currentTime/audio.duration*1000)});
+$p('seekBar').addEventListener('input',e=>{if(Number.isFinite(audio.duration))audio.currentTime=(Number(e.target.value)/1000)*audio.duration});
+$p('speedMode').addEventListener('change',e=>audio.playbackRate=Number(e.target.value));
+$p('volumeMode').addEventListener('input',e=>{audio.volume=Number(e.target.value);$p('volumeValue').textContent=Math.round(audio.volume*100)+'%'});
+audio.volume=.85;
+renderTrackList();updateOfflineProgress();
+
+$p('volumeMode').addEventListener('input',e=>{audio.volume=Number(e.target.value);$p('volumeValue').textContent=Math.round(audio.volume*100)+'%'});
+$p('speedMode').addEventListener('change',e=>audio.playbackRate=Number(e.target.value));audio.volume=.85;renderTrackList();
+
+</script></body></html>
