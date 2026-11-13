@@ -1,4 +1,4 @@
-const CACHE = 'gid-lekti-bib-v14';
+const CACHE = 'gid-lekti-bib-v15';
 const AUDIO_CACHE = 'kreyol-podcasts-audio-v1';
 const CORE_FILES = ['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 const OPTIONAL_FILES = ['./kouveti-gid-lekti-bib-la.png'];
